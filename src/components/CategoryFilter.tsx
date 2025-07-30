@@ -41,34 +41,22 @@ export const CategoryFilter = ({ categories, selectedCategory, onCategoryChange 
       anime({
         targets: buttons,
         opacity: [0, 1],
-        translateY: [30, 0],
-        scale: [0.8, 1],
-        duration: 600,
-        delay: anime.stagger(100),
-        easing: 'easeOutElastic(1, .6)'
+        translateY: [20, 0],
+        duration: 400,
+        delay: anime.stagger(50),
+        easing: 'easeOutQuart'
       });
     }
   }, [filterRef, categories]);
 
   const handleCategoryClick = (categoryId: string | null) => {
     onCategoryChange(categoryId);
-    
-    // Animate button selection
-    const activeBtn = filterRef?.querySelector(`[data-category="${categoryId}"]`);
-    if (activeBtn) {
-      anime({
-        targets: activeBtn,
-        scale: [1, 1.1, 1],
-        duration: 300,
-        easing: 'easeOutBack'
-      });
-    }
   };
 
   return (
-    <div ref={setFilterRef} className="glass-card p-6 mb-8">
-      <h2 className="text-2xl font-bold text-gradient-primary mb-6">
-        Explore Categories
+    <div ref={setFilterRef} className="card-modern">
+      <h2 className="text-xl font-semibold mb-6">
+        Browse Categories
       </h2>
       
       <div className="flex flex-wrap gap-3">
@@ -76,17 +64,12 @@ export const CategoryFilter = ({ categories, selectedCategory, onCategoryChange 
           data-category={null}
           onClick={() => handleCategoryClick(null)}
           variant={selectedCategory === null ? 'default' : 'outline'}
-          className={`category-btn relative overflow-hidden transition-all duration-300 ${
-            selectedCategory === null 
-              ? 'bg-gradient-to-r from-primary to-secondary text-white shadow-lg scale-105' 
-              : 'glass hover:scale-105'
+          className={`category-btn transition-all duration-200 ${
+            selectedCategory === null ? 'shadow-md' : ''
           }`}
         >
-          <span className="text-lg mr-2">🌟</span>
+          <span className="text-base mr-2">✨</span>
           All Products
-          <Badge variant="secondary" className="ml-2">
-            {categories.reduce((sum, cat) => sum, 0)}
-          </Badge>
         </Button>
 
         {categories.map((category) => (
@@ -95,13 +78,11 @@ export const CategoryFilter = ({ categories, selectedCategory, onCategoryChange 
             data-category={category.id}
             onClick={() => handleCategoryClick(category.id)}
             variant={selectedCategory === category.id ? 'default' : 'outline'}
-            className={`category-btn relative overflow-hidden transition-all duration-300 ${
-              selectedCategory === category.id
-                ? `bg-gradient-to-r ${getCategoryGradient(category.name)} text-white shadow-lg scale-105`
-                : 'glass hover:scale-105'
+            className={`category-btn transition-all duration-200 ${
+              selectedCategory === category.id ? 'shadow-md' : ''
             }`}
           >
-            <span className="text-lg mr-2">
+            <span className="text-base mr-2">
               {getCategoryIcon(category.name)}
             </span>
             {category.name}

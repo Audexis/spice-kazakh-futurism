@@ -93,15 +93,15 @@ export const AdminPanel = ({ categories, onProductAdded }: AdminPanelProps) => {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button className="btn-futuristic fixed bottom-6 right-6 z-50 shadow-2xl">
+        <Button className="btn-primary fixed bottom-6 right-6 z-50 shadow-xl">
           <Plus className="h-5 w-5 mr-2" />
           Add Product
         </Button>
       </DialogTrigger>
       
-      <DialogContent className="glass-card max-w-md">
+      <DialogContent className="card-modern max-w-md border-0">
         <DialogHeader>
-          <DialogTitle className="text-gradient-primary text-xl">
+          <DialogTitle className="text-2xl text-primary-gradient">
             Add New Product
           </DialogTitle>
         </DialogHeader>
@@ -113,7 +113,7 @@ export const AdminPanel = ({ categories, onProductAdded }: AdminPanelProps) => {
               id="name"
               value={formData.name}
               onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-              className="glass"
+              className="focus-ring"
               placeholder="Enter product name"
               required
             />
@@ -125,7 +125,7 @@ export const AdminPanel = ({ categories, onProductAdded }: AdminPanelProps) => {
               value={formData.category_id} 
               onValueChange={(value) => setFormData(prev => ({ ...prev, category_id: value }))}
             >
-              <SelectTrigger className="glass">
+              <SelectTrigger className="focus-ring">
                 <SelectValue placeholder="Select category" />
               </SelectTrigger>
               <SelectContent>
@@ -144,7 +144,7 @@ export const AdminPanel = ({ categories, onProductAdded }: AdminPanelProps) => {
               id="manufacturer"
               value={formData.manufacturer}
               onChange={(e) => setFormData(prev => ({ ...prev, manufacturer: e.target.value }))}
-              className="glass"
+              className="focus-ring"
               placeholder="Enter manufacturer"
             />
           </div>
@@ -157,7 +157,7 @@ export const AdminPanel = ({ categories, onProductAdded }: AdminPanelProps) => {
               step="0.01"
               value={formData.price}
               onChange={(e) => setFormData(prev => ({ ...prev, price: e.target.value }))}
-              className="glass"
+              className="focus-ring"
               placeholder="0.00"
               required
             />
@@ -169,7 +169,7 @@ export const AdminPanel = ({ categories, onProductAdded }: AdminPanelProps) => {
               id="description"
               value={formData.description}
               onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
-              className="glass resize-none"
+              className="focus-ring resize-none"
               placeholder="Product description"
               rows={3}
             />
@@ -177,7 +177,7 @@ export const AdminPanel = ({ categories, onProductAdded }: AdminPanelProps) => {
 
           <div>
             <Label htmlFor="image">Product Image</Label>
-            <div className="glass border-dashed border-2 border-border/50 rounded-lg p-4 text-center hover:border-primary/50 transition-colors">
+            <div className="surface border-dashed border-2 border-border/50 rounded-xl p-6 text-center hover:border-primary/30 transition-colors">
               <input
                 id="image"
                 type="file"
@@ -185,18 +185,25 @@ export const AdminPanel = ({ categories, onProductAdded }: AdminPanelProps) => {
                 onChange={handleImageChange}
                 className="hidden"
               />
-              <Label htmlFor="image" className="cursor-pointer flex flex-col items-center space-y-2">
-                <Upload className="h-6 w-6 text-muted-foreground" />
-                <span className="text-sm text-muted-foreground">
-                  {imageFile ? imageFile.name : 'Click to upload image'}
-                </span>
+              <Label htmlFor="image" className="cursor-pointer flex flex-col items-center space-y-3">
+                <div className="w-12 h-12 rounded-full bg-muted/50 flex items-center justify-center">
+                  <Upload className="h-5 w-5 text-muted-foreground" />
+                </div>
+                <div className="space-y-1">
+                  <p className="text-sm font-medium">
+                    {imageFile ? imageFile.name : 'Upload product image'}
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    PNG, JPG up to 10MB
+                  </p>
+                </div>
               </Label>
             </div>
           </div>
 
           <Button 
             type="submit" 
-            className="w-full btn-futuristic" 
+            className="w-full btn-primary" 
             disabled={loading}
           >
             {loading ? 'Adding...' : 'Add Product'}

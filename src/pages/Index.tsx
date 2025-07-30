@@ -82,65 +82,73 @@ const Index = () => {
   }
 
   return (
-    <div className="min-h-screen relative overflow-hidden">
+    <div className="min-h-screen">
       {/* Background Effects */}
-      <div className="fixed inset-0 pointer-events-none">
-        <div className="absolute top-20 right-20 w-96 h-96 bg-primary/10 rounded-full blur-3xl animate-pulse" />
-        <div className="absolute bottom-20 left-20 w-80 h-80 bg-secondary/10 rounded-full blur-3xl animate-pulse" style={{animationDelay: '2s'}} />
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-accent/10 rounded-full blur-3xl animate-pulse" style={{animationDelay: '4s'}} />
+      <div className="fixed inset-0 pointer-events-none opacity-40">
+        <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-primary/5 rounded-full blur-3xl" />
+        <div className="absolute bottom-1/4 left-1/4 w-80 h-80 bg-primary/3 rounded-full blur-3xl" />
       </div>
 
+      {/* Navigation */}
+      <nav className="sticky top-0 z-50 border-b border-border/50 backdrop-blur-md bg-background/80">
+        <div className="container mx-auto px-4 h-16 flex items-center justify-between">
+          <div className="flex items-center space-x-3">
+            <div className="w-8 h-8 bg-gradient-to-br from-primary to-primary/80 rounded-lg"></div>
+            <h1 className="text-xl font-semibold">Spice Bazaar</h1>
+          </div>
+          
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setIsAdmin(!isAdmin)}
+            className="focus-ring"
+          >
+            {isAdmin ? '👤 User' : '🔧 Admin'}
+          </Button>
+        </div>
+      </nav>
+
       {/* Hero Section */}
-      <section className="relative pt-20 pb-16 text-center">
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto space-y-8">
-            <div className="hero-element opacity-0">
-              <Badge className="mb-6 bg-gradient-to-r from-spice-saffron to-spice-paprika text-black font-semibold px-4 py-2">
+      <section className="relative pt-16 pb-12">
+        <div className="container mx-auto px-4 text-center">
+          <div className="max-w-4xl mx-auto space-y-6">
+            <div className="animate-fade-in">
+              <Badge variant="secondary" className="mb-4">
                 <Globe className="h-4 w-4 mr-2" />
                 Authentic Indian Spices in Kazakhstan
               </Badge>
             </div>
 
-            <h1 className="hero-element opacity-0 text-5xl md:text-7xl font-bold text-gradient-cosmic leading-tight">
-              Spice Bazaar
-              <span className="block text-gradient-spice">Kazakhstan</span>
+            <h1 className="animate-slide-up text-5xl md:text-6xl font-bold text-primary-gradient">
+              Premium Spice Collection
             </h1>
 
-            <p className="hero-element opacity-0 text-xl md:text-2xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-              Experience the authentic flavors of India with our premium collection of spices, 
-              snacks, and traditional ingredients delivered fresh to your doorstep.
+            <p className="animate-slide-up text-lg text-muted-foreground max-w-2xl mx-auto">
+              Experience authentic Indian flavors with our curated selection of premium spices, 
+              traditional snacks, and specialty ingredients.
             </p>
 
-            <div className="hero-element opacity-0 flex flex-col sm:flex-row gap-4 justify-center items-center">
-              <Button className="btn-futuristic text-lg px-8 py-4">
-                <Sparkles className="h-5 w-5 mr-2" />
-                Explore Collection
-              </Button>
+            <div className="animate-slide-up flex items-center justify-center gap-4 pt-4">
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <Star className="h-4 w-4 fill-current text-yellow-500" />
-                <span>4.9/5 rating from 500+ customers</span>
+                <span>4.9/5 from 500+ customers</span>
               </div>
             </div>
-          </div>
-
-          {/* 3D Spice Scene */}
-          <div className="hero-element opacity-0 mt-16">
-            <SpiceScene />
           </div>
         </div>
       </section>
 
       {/* Main Content */}
-      <main className="relative container mx-auto px-4 pb-20">
+      <main className="container mx-auto px-4 pb-20 space-y-8">
         {/* Search Bar */}
-        <div className="glass-card p-6 mb-8">
-          <div className="relative max-w-md mx-auto">
+        <div className="card-modern max-w-md mx-auto">
+          <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
             <Input
-              placeholder="Search spices, snacks, or brands..."
+              placeholder="Search products..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10 glass text-lg"
+              className="pl-10 focus-ring"
             />
           </div>
         </div>
@@ -191,16 +199,6 @@ const Index = () => {
           onProductAdded={handleProductAdded}
         />
       )}
-
-      {/* Admin Toggle (for demo) */}
-      <Button
-        variant="outline"
-        size="sm"
-        onClick={() => setIsAdmin(!isAdmin)}
-        className="fixed top-4 right-4 glass z-50"
-      >
-        {isAdmin ? '👤 User Mode' : '🔧 Admin Mode'}
-      </Button>
     </div>
   );
 };
