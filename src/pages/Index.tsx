@@ -5,7 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { Search, Globe, Star } from 'lucide-react';
 import { SpiceCard } from '@/components/SpiceCard';
 import { CategoryFilter } from '@/components/CategoryFilter';
-import { PhysicsSpiceScene } from '@/components/PhysicsSpiceScene';
+import { SpiceCollisionAnimation } from '@/components/SpiceCollisionAnimation';
 import { FuturisticScrollHint } from '@/components/FuturisticScrollHint';
 import { AdminPanel } from '@/components/AdminPanel';
 import { useSpiceData } from '@/hooks/useSpiceData';
@@ -111,8 +111,8 @@ const Index = () => {
         {/* Background gradient */}
         <div className="absolute inset-0 bg-gradient-to-b from-background via-background/95 to-background/90" />
         
-        {/* Physics Spice Scene */}
-        <PhysicsSpiceScene />
+        {/* Spice Collision Animation */}
+        <SpiceCollisionAnimation />
 
         {/* Navigation overlay */}
         <nav className="absolute top-0 left-0 right-0 z-50 border-b border-border/20 backdrop-blur-md bg-background/60">
