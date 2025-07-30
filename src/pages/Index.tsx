@@ -5,8 +5,8 @@ import { Badge } from '@/components/ui/badge';
 import { Search, Globe, Star } from 'lucide-react';
 import { SpiceCard } from '@/components/SpiceCard';
 import { CategoryFilter } from '@/components/CategoryFilter';
-import SpiceScene3D from '@/components/SpiceScene3D';
-import { ScrollIndicator } from '@/components/ScrollIndicator';
+import { PhysicsSpiceScene } from '@/components/PhysicsSpiceScene';
+import { FuturisticScrollHint } from '@/components/FuturisticScrollHint';
 import { AdminPanel } from '@/components/AdminPanel';
 import { useSpiceData } from '@/hooks/useSpiceData';
 import { useToast } from '@/hooks/use-toast';
@@ -111,10 +111,8 @@ const Index = () => {
         {/* Background gradient */}
         <div className="absolute inset-0 bg-gradient-to-b from-background via-background/95 to-background/90" />
         
-        {/* 3D Scene */}
-        <div className="absolute inset-0">
-          <SpiceScene3D />
-        </div>
+        {/* Physics Spice Scene */}
+        <PhysicsSpiceScene />
 
         {/* Navigation overlay */}
         <nav className="absolute top-0 left-0 right-0 z-50 border-b border-border/20 backdrop-blur-md bg-background/60">
@@ -146,12 +144,12 @@ const Index = () => {
           </div>
         </div>
 
-        {/* Scroll indicator */}
-        <ScrollIndicator onClick={scrollToContent} />
+        {/* Futuristic scroll hint */}
+        <FuturisticScrollHint onClick={scrollToContent} />
       </section>
 
       {/* Content Section */}
-      <div ref={contentRef} className="relative bg-background">
+      <div ref={contentRef} className="relative bg-background z-20">
         {/* Subtle background pattern */}
         <div className="absolute inset-0 opacity-5">
           <div className="absolute inset-0" style={{
