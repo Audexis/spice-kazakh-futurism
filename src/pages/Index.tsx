@@ -1,11 +1,12 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import { Search, Globe, Star, Sparkles } from 'lucide-react';
+import { Search, Globe, Star } from 'lucide-react';
 import { SpiceCard } from '@/components/SpiceCard';
 import { CategoryFilter } from '@/components/CategoryFilter';
-import { SpiceScene } from '@/components/SpiceScene';
+import SpiceScene3D from '@/components/SpiceScene3D';
+import { ScrollIndicator } from '@/components/ScrollIndicator';
 import { AdminPanel } from '@/components/AdminPanel';
 import { useSpiceData } from '@/hooks/useSpiceData';
 import { useToast } from '@/hooks/use-toast';
@@ -14,7 +15,8 @@ import anime from 'animejs';
 const Index = () => {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
-  const [isAdmin, setIsAdmin] = useState(false); // For demo purposes - in real app, check auth
+  const [isAdmin, setIsAdmin] = useState(false);
+  const contentRef = useRef<HTMLDivElement>(null);
   const { categories, products, loading, deleteProduct, refetch } = useSpiceData();
   const { toast } = useToast();
 
@@ -37,17 +39,38 @@ const Index = () => {
   }, [products, selectedCategory, searchQuery]);
 
   useEffect(() => {
-    // Animate hero section on load
-    anime({
-      targets: '.hero-element',
-      opacity: [0, 1],
-      translateY: [100, 0],
-      scale: [0.8, 1],
-      duration: 1200,
-      delay: anime.stagger(200),
-      easing: 'easeOutElastic(1, .5)'
-    });
+    // Animate content sections on scroll
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          anime({
+            targets: entry.target,
+            opacity: [0, 1],
+            translateY: [50, 0],
+            duration: 800,
+            easing: 'easeOutQuart'
+          });
+        }
+      });
+    }, observerOptions);
+
+    const contentSections = document.querySelectorAll('.animate-on-scroll');
+    contentSections.forEach(section => observer.observe(section));
+
+    return () => observer.disconnect();
   }, []);
+
+  const scrollToContent = () => {
+    contentRef.current?.scrollIntoView({ 
+      behavior: 'smooth',
+      block: 'start'
+    });
+  };
 
   const handleDeleteProduct = async (id: string) => {
     try {
@@ -83,114 +106,128 @@ const Index = () => {
 
   return (
     <div className="min-h-screen">
-      {/* Background Effects */}
-      <div className="fixed inset-0 pointer-events-none opacity-40">
-        <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-primary/5 rounded-full blur-3xl" />
-        <div className="absolute bottom-1/4 left-1/4 w-80 h-80 bg-primary/3 rounded-full blur-3xl" />
-      </div>
-
-      {/* Navigation */}
-      <nav className="sticky top-0 z-50 border-b border-border/50 backdrop-blur-md bg-background/80">
-        <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-          <div className="flex items-center space-x-3">
-            <div className="w-8 h-8 bg-gradient-to-br from-primary to-primary/80 rounded-lg"></div>
-            <h1 className="text-xl font-semibold">Spice Bazaar</h1>
-          </div>
-          
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => setIsAdmin(!isAdmin)}
-            className="focus-ring"
-          >
-            {isAdmin ? '👤 User' : '🔧 Admin'}
-          </Button>
+      {/* Immersive 3D Hero Section */}
+      <section className="h-screen relative overflow-hidden">
+        {/* Background gradient */}
+        <div className="absolute inset-0 bg-gradient-to-b from-background via-background/95 to-background/90" />
+        
+        {/* 3D Scene */}
+        <div className="absolute inset-0">
+          <SpiceScene3D />
         </div>
-      </nav>
 
-      {/* Hero Section */}
-      <section className="relative pt-16 pb-12">
-        <div className="container mx-auto px-4 text-center">
-          <div className="max-w-4xl mx-auto space-y-6">
-            <div className="animate-fade-in">
-              <Badge variant="secondary" className="mb-4">
-                <Globe className="h-4 w-4 mr-2" />
-                Authentic Indian Spices in Kazakhstan
-              </Badge>
+        {/* Navigation overlay */}
+        <nav className="absolute top-0 left-0 right-0 z-50 border-b border-border/20 backdrop-blur-md bg-background/60">
+          <div className="container mx-auto px-4 h-16 flex items-center justify-between">
+            <div className="flex items-center space-x-3">
+              <div className="w-8 h-8 bg-gradient-to-br from-primary to-primary/80 rounded-lg"></div>
+              <h1 className="text-xl font-semibold text-primary-gradient">Spice Bazaar</h1>
             </div>
+            
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setIsAdmin(!isAdmin)}
+              className="focus-ring bg-background/80"
+            >
+              {isAdmin ? '👤 User' : '🔧 Admin'}
+            </Button>
+          </div>
+        </nav>
 
-            <h1 className="animate-slide-up text-5xl md:text-6xl font-bold text-primary-gradient">
-              Premium Spice Collection
-            </h1>
+        {/* Subtitle overlay */}
+        <div className="absolute bottom-32 left-1/2 transform -translate-x-1/2 text-center z-40">
+          <p className="text-lg text-muted-foreground max-w-xl mx-auto mb-4">
+            Experience authentic Indian flavors with our curated selection of premium spices and traditional ingredients
+          </p>
+          <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
+            <Star className="h-4 w-4 fill-current text-yellow-500" />
+            <span>4.9/5 from 500+ customers in Kazakhstan</span>
+          </div>
+        </div>
 
-            <p className="animate-slide-up text-lg text-muted-foreground max-w-2xl mx-auto">
-              Experience authentic Indian flavors with our curated selection of premium spices, 
-              traditional snacks, and specialty ingredients.
-            </p>
+        {/* Scroll indicator */}
+        <ScrollIndicator onClick={scrollToContent} />
+      </section>
 
-            <div className="animate-slide-up flex items-center justify-center gap-4 pt-4">
-              <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <Star className="h-4 w-4 fill-current text-yellow-500" />
-                <span>4.9/5 from 500+ customers</span>
+      {/* Content Section */}
+      <div ref={contentRef} className="relative bg-background">
+        {/* Subtle background pattern */}
+        <div className="absolute inset-0 opacity-5">
+          <div className="absolute inset-0" style={{
+            backgroundImage: `radial-gradient(circle at 20% 50%, hsl(var(--primary)) 0%, transparent 50%), 
+                             radial-gradient(circle at 80% 50%, hsl(var(--primary)) 0%, transparent 50%)`
+          }} />
+        </div>
+
+        <main className="relative container mx-auto px-4 py-20 space-y-16">
+          {/* Search Section */}
+          <div className="animate-on-scroll opacity-0">
+            <div className="text-center mb-8">
+              <h2 className="text-3xl font-bold text-primary-gradient mb-4">
+                Browse Our Collection
+              </h2>
+              <p className="text-muted-foreground max-w-2xl mx-auto">
+                Find the perfect spices and ingredients for your culinary adventures
+              </p>
+            </div>
+            
+            <div className="card-modern max-w-md mx-auto">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                <Input
+                  placeholder="Search products..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-10 focus-ring"
+                />
               </div>
             </div>
           </div>
-        </div>
-      </section>
 
-      {/* Main Content */}
-      <main className="container mx-auto px-4 pb-20 space-y-8">
-        {/* Search Bar */}
-        <div className="card-modern max-w-md mx-auto">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-            <Input
-              placeholder="Search products..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10 focus-ring"
+          {/* Category Filter */}
+          <div className="animate-on-scroll opacity-0">
+            <CategoryFilter 
+              categories={categories}
+              selectedCategory={selectedCategory}
+              onCategoryChange={setSelectedCategory}
             />
           </div>
-        </div>
 
-        {/* Category Filter */}
-        <CategoryFilter 
-          categories={categories}
-          selectedCategory={selectedCategory}
-          onCategoryChange={setSelectedCategory}
-        />
+          {/* Products Grid */}
+          <div className="animate-on-scroll opacity-0">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+              {filteredProducts.map((product) => (
+                <SpiceCard
+                  key={product.id}
+                  product={product}
+                  isAdmin={isAdmin}
+                  onEdit={(product) => {
+                    toast({
+                      title: 'Edit Product',
+                      description: 'Edit functionality coming soon!',
+                      variant: 'default'
+                    });
+                  }}
+                  onDelete={handleDeleteProduct}
+                />
+              ))}
+            </div>
 
-        {/* Products Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {filteredProducts.map((product) => (
-            <SpiceCard
-              key={product.id}
-              product={product}
-              isAdmin={isAdmin}
-              onEdit={(product) => {
-                toast({
-                  title: 'Edit Product',
-                  description: 'Edit functionality coming soon!',
-                  variant: 'default'
-                });
-              }}
-              onDelete={handleDeleteProduct}
-            />
-          ))}
-        </div>
-
-        {filteredProducts.length === 0 && (
-          <div className="text-center py-16">
-            <div className="text-6xl mb-4">🔍</div>
-            <h3 className="text-2xl font-bold text-muted-foreground mb-2">
-              No products found
-            </h3>
-            <p className="text-muted-foreground">
-              Try adjusting your search or category filter
-            </p>
+            {filteredProducts.length === 0 && (
+              <div className="text-center py-16">
+                <div className="text-6xl mb-4">🔍</div>
+                <h3 className="text-2xl font-bold text-muted-foreground mb-2">
+                  No products found
+                </h3>
+                <p className="text-muted-foreground">
+                  Try adjusting your search or category filter
+                </p>
+              </div>
+            )}
           </div>
-        )}
-      </main>
+        </main>
+      </div>
 
       {/* Admin Panel */}
       {isAdmin && (
