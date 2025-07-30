@@ -123,70 +123,130 @@ export const SpiceCollisionAnimation = () => {
       return points;
     };
 
-    let animationPhase = 0; // 0: approach, 1: collision, 2: formation
+    let animationPhase = 0; // 0: approach, 1: collision, 2: formation, 3: final
     let startTime = Date.now();
     const allParticles = [...redParticles, ...yellowParticles];
     let textPoints: Array<{x: number, y: number}> = [];
+    let collisionStarted = false;
 
     const animate = () => {
       const currentTime = Date.now();
       const elapsed = (currentTime - startTime) / 1000;
 
-      // Clear canvas with slight trail effect for smoothness
-      ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
+      // Clear canvas completely each frame for crisp animation
+      ctx.fillStyle = 'rgba(0, 0, 0, 1)';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      // Phase 1: Particles approach center (0-1.5s)
-      if (elapsed < 1.5) {
+      // Phase 1: Particles approach center (0-2s)
+      if (elapsed < 2) {
+        animationPhase = 0;
         allParticles.forEach(particle => {
           particle.update();
           particle.draw(ctx);
         });
       }
-      // Phase 2: Collision and text formation (1.5-3s)
-      else if (elapsed < 3 && animationPhase < 2) {
+      // Phase 2: Collision effect (2-3s)
+      else if (elapsed < 3) {
         if (animationPhase === 0) {
+          animationPhase = 1;
+          console.log('Starting collision phase');
+        }
+        
+        // Continue particle movement but add collision effects
+        allParticles.forEach(particle => {
+          particle.update();
+          
+          // Add explosion effect at collision
+          if (!collisionStarted) {
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            const distance = Math.sqrt((particle.x - centerX) ** 2 + (particle.y - centerY) ** 2);
+            
+            if (distance < 100) {
+              particle.vx *= -0.5 + Math.random();
+              particle.vy *= -0.5 + Math.random();
+              particle.size *= 1.5;
+            }
+          }
+          
+          particle.draw(ctx);
+        });
+        
+        if (!collisionStarted) {
+          collisionStarted = true;
+          console.log('Collision effects started');
+        }
+
+        // Add collision burst effect
+        const collisionProgress = (elapsed - 2) / 1;
+        ctx.save();
+        ctx.globalAlpha = Math.sin(collisionProgress * Math.PI) * 0.8;
+        ctx.fillStyle = '#FFFFFF';
+        ctx.shadowBlur = 50;
+        ctx.shadowColor = '#FFFFFF';
+        ctx.beginPath();
+        ctx.arc(canvas.width / 2, canvas.height / 2, 50 * collisionProgress, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      }
+      // Phase 3: Text formation (3-4.5s)
+      else if (elapsed < 4.5) {
+        if (animationPhase === 1) {
           animationPhase = 2;
           textPoints = getTextPoints('SPICE BAZAAR', Math.min(120, canvas.width / 10));
+          console.log('Starting text formation, text points:', textPoints.length);
           
           // Assign particles to text formation points
-          allParticles.forEach((particle, index) => {
+          const shuffledParticles = [...allParticles].sort(() => Math.random() - 0.5);
+          shuffledParticles.forEach((particle, index) => {
             if (index < textPoints.length) {
               particle.targetX = textPoints[index].x;
               particle.targetY = textPoints[index].y;
               particle.isForming = true;
               particle.vx *= 0.1;
               particle.vy *= 0.1;
+              particle.size = 2; // Reset size
             } else {
-              // Fade out excess particles
-              particle.alpha *= 0.95;
+              // Move excess particles off screen
+              particle.alpha *= 0.98;
             }
           });
         }
 
         allParticles.forEach(particle => {
           particle.update();
-          particle.draw(ctx);
+          if (particle.alpha > 0.1) {
+            particle.draw(ctx);
+          }
         });
 
-        // Add glowing text effect
-        const progress = (elapsed - 1.5) / 1.5;
-        ctx.save();
-        ctx.globalAlpha = progress;
-        ctx.font = `bold ${Math.min(120, canvas.width / 10)}px Orbitron, monospace`;
-        ctx.textAlign = 'center';
-        ctx.fillStyle = '#4FC3F7';
-        ctx.shadowBlur = 20;
-        ctx.shadowColor = '#4FC3F7';
-        ctx.fillText('SPICE BAZAAR', canvas.width / 2, canvas.height / 2);
-        ctx.restore();
+        // Gradually show text outline
+        const formationProgress = (elapsed - 3) / 1.5;
+        if (formationProgress > 0.5) {
+          ctx.save();
+          ctx.globalAlpha = (formationProgress - 0.5) * 2;
+          ctx.font = `bold ${Math.min(120, canvas.width / 10)}px Orbitron, monospace`;
+          ctx.textAlign = 'center';
+          ctx.strokeStyle = '#4FC3F7';
+          ctx.lineWidth = 2;
+          ctx.shadowBlur = 10;
+          ctx.shadowColor = '#4FC3F7';
+          ctx.strokeText('SPICE BAZAAR', canvas.width / 2, canvas.height / 2);
+          ctx.restore();
+        }
       }
-      // Phase 3: Final glow effect (3s+)
+      // Phase 4: Final glow effect (4.5s+)
       else {
-        // Clear and show final text
+        if (animationPhase === 2) {
+          animationPhase = 3;
+          console.log('Final phase started');
+        }
+        
+        // Clear background
         ctx.fillStyle = 'rgba(0, 0, 0, 1)';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         
+        // Final text with full glow
         ctx.save();
         ctx.font = `bold ${Math.min(120, canvas.width / 10)}px Orbitron, monospace`;
         ctx.textAlign = 'center';
@@ -203,15 +263,15 @@ export const SpiceCollisionAnimation = () => {
         ctx.fillText('KAZAKHSTAN', canvas.width / 2, canvas.height / 2 + Math.min(80, canvas.width / 15));
         ctx.restore();
 
-        // Add some ambient particles
-        for (let i = 0; i < 50; i++) {
+        // Add ambient floating particles
+        for (let i = 0; i < 30; i++) {
           const x = canvas.width / 2 + (Math.random() - 0.5) * 400;
           const y = canvas.height / 2 + (Math.random() - 0.5) * 200;
           const size = Math.random() * 2;
-          const alpha = Math.random() * 0.5;
+          const alpha = Math.random() * 0.3 * Math.sin(elapsed * 2);
           
           ctx.save();
-          ctx.globalAlpha = alpha;
+          ctx.globalAlpha = Math.max(0, alpha);
           ctx.fillStyle = Math.random() > 0.5 ? '#E65100' : '#FFB74D';
           ctx.shadowBlur = 5;
           ctx.shadowColor = ctx.fillStyle;
@@ -221,7 +281,7 @@ export const SpiceCollisionAnimation = () => {
           ctx.restore();
         }
         
-        return; // Stop animation
+        return; // Stop animation after showing final state
       }
 
       animationRef.current = requestAnimationFrame(animate);
