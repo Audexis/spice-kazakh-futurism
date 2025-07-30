@@ -139,7 +139,6 @@ const SpiceScene3D = () => {
             color="#ffffff"
             anchorX="center"
             anchorY="middle"
-            font="/fonts/bold.woff"
           >
             SPICE BAZAAR
           </Text>
