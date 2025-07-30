@@ -19,7 +19,7 @@ export const SpiceCollisionAnimation = () => {
     updateCanvasSize();
     window.addEventListener('resize', updateCanvasSize);
 
-    // Particle class for smooth animation
+    // Particle class for realistic spice physics
     class Particle {
       x: number;
       y: number;
@@ -31,6 +31,10 @@ export const SpiceCollisionAnimation = () => {
       targetX?: number;
       targetY?: number;
       isForming: boolean = false;
+      rotation: number;
+      rotationSpeed: number;
+      shape: 'circle' | 'oval' | 'grain';
+      settled: boolean = false;
 
       constructor(x: number, y: number, vx: number, vy: number, color: string, size: number = 2) {
         this.x = x;
@@ -40,35 +44,101 @@ export const SpiceCollisionAnimation = () => {
         this.size = size;
         this.color = color;
         this.alpha = 1;
+        this.rotation = Math.random() * Math.PI * 2;
+        this.rotationSpeed = (Math.random() - 0.5) * 0.1;
+        this.shape = Math.random() < 0.4 ? 'circle' : Math.random() < 0.7 ? 'oval' : 'grain';
       }
 
       update() {
-        if (this.isForming && this.targetX !== undefined && this.targetY !== undefined) {
-          // Move towards target position for text formation
-          const dx = this.targetX - this.x;
-          const dy = this.targetY - this.y;
-          this.x += dx * 0.08;
-          this.y += dy * 0.08;
-        } else {
+        if (!this.settled) {
           this.x += this.vx;
           this.y += this.vy;
+          this.rotation += this.rotationSpeed;
+          
+          // Apply friction and gravity
+          this.vx *= 0.99;
+          this.vy += 0.02; // gravity
+          this.vy *= 0.995; // air resistance
+        } else if (this.isForming && this.targetX !== undefined && this.targetY !== undefined) {
+          // Only move to target when settled and assigned
+          const dx = this.targetX - this.x;
+          const dy = this.targetY - this.y;
+          if (Math.abs(dx) > 1 || Math.abs(dy) > 1) {
+            this.x += dx * 0.05;
+            this.y += dy * 0.05;
+          }
         }
       }
 
-      draw(ctx: CanvasRenderingContext2D, blurEffect: boolean = false) {
+      checkCollision(other: Particle): boolean {
+        const dx = this.x - other.x;
+        const dy = this.y - other.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        return distance < (this.size + other.size);
+      }
+
+      collideWith(other: Particle) {
+        const dx = this.x - other.x;
+        const dy = this.y - other.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        
+        if (distance > 0) {
+          // Realistic collision response
+          const nx = dx / distance;
+          const ny = dy / distance;
+          
+          // Relative velocity
+          const rvx = this.vx - other.vx;
+          const rvy = this.vy - other.vy;
+          
+          // Relative velocity in collision normal direction
+          const speed = rvx * nx + rvy * ny;
+          
+          if (speed > 0) return; // Objects moving apart
+          
+          // Collision impulse
+          const impulse = 2 * speed / 2; // assuming equal mass
+          
+          this.vx -= impulse * nx;
+          this.vy -= impulse * ny;
+          other.vx += impulse * nx;
+          other.vy += impulse * ny;
+          
+          // Add some randomness for realistic scatter
+          this.vx += (Math.random() - 0.5) * 0.5;
+          this.vy += (Math.random() - 0.5) * 0.5;
+          other.vx += (Math.random() - 0.5) * 0.5;
+          other.vy += (Math.random() - 0.5) * 0.5;
+        }
+      }
+
+      draw(ctx: CanvasRenderingContext2D) {
         ctx.save();
         ctx.globalAlpha = this.alpha;
-        
-        if (blurEffect && this.size < 1) {
-          // Only blur very small particles
-          ctx.filter = 'blur(0.5px)';
-        }
-        
         ctx.fillStyle = this.color;
-        ctx.shadowBlur = 2;
+        
+        // Add blur for spice-like appearance
+        ctx.filter = 'blur(0.5px)';
+        ctx.shadowBlur = 1;
         ctx.shadowColor = this.color;
+        
+        ctx.translate(this.x, this.y);
+        ctx.rotate(this.rotation);
+        
+        // Draw different spice particle shapes
         ctx.beginPath();
-        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        switch (this.shape) {
+          case 'circle':
+            ctx.arc(0, 0, this.size, 0, Math.PI * 2);
+            break;
+          case 'oval':
+            ctx.ellipse(0, 0, this.size, this.size * 0.6, 0, 0, Math.PI * 2);
+            break;
+          case 'grain':
+            // Grain-like elongated shape
+            ctx.ellipse(0, 0, this.size * 0.4, this.size * 1.2, 0, 0, Math.PI * 2);
+            break;
+        }
         ctx.fill();
         ctx.restore();
       }
@@ -83,10 +153,10 @@ export const SpiceCollisionAnimation = () => {
       redParticles.push(new Particle(
         -100 - Math.random() * 300,
         canvas.height / 2 + (Math.random() - 0.5) * canvas.height * 0.6,
-        1.5 + Math.random() * 2,
-        (Math.random() - 0.5) * 1.5,
-        `hsl(${Math.random() * 15}, 100%, ${60 + Math.random() * 30}%)`, // Brighter red
-        1.5 + Math.random() * 2 // Larger particles
+        3 + Math.random() * 4, // Higher initial velocity for throwing effect
+        (Math.random() - 0.5) * 2,
+        `hsl(${Math.random() * 15}, 100%, ${60 + Math.random() * 30}%)`,
+        0.8 + Math.random() * 1.2 // Smaller, more realistic spice size
       ));
     }
 
@@ -95,10 +165,10 @@ export const SpiceCollisionAnimation = () => {
       yellowParticles.push(new Particle(
         canvas.width + 100 + Math.random() * 300,
         canvas.height / 2 + (Math.random() - 0.5) * canvas.height * 0.6,
-        -1.5 - Math.random() * 2,
-        (Math.random() - 0.5) * 1.5,
-        `hsl(${50 + Math.random() * 10}, 100%, ${60 + Math.random() * 30}%)`, // Brighter yellow
-        1.5 + Math.random() * 2 // Larger particles
+        -3 - Math.random() * 4, // Higher initial velocity for throwing effect
+        (Math.random() - 0.5) * 2,
+        `hsl(${50 + Math.random() * 10}, 100%, ${60 + Math.random() * 30}%)`,
+        0.8 + Math.random() * 1.2 // Smaller, more realistic spice size
       ));
     }
 
@@ -143,128 +213,127 @@ export const SpiceCollisionAnimation = () => {
       ctx.fillStyle = 'rgba(0, 0, 0, 1)';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      // Phase 1: Powder clouds approach center (0-2s)
+      // Phase 1: Particles thrown towards center (0-2s)
       if (elapsed < 2) {
         animationPhase = 0;
         
-        // Draw powder clouds clearly visible
+        // Update all particles with physics
         allParticles.forEach(particle => {
           particle.update();
-          particle.draw(ctx, false); // No blur effect initially
         });
         
-        // Add subtle density effect without hiding particles
+        // Check for collisions between particles
+        for (let i = 0; i < redParticles.length; i++) {
+          for (let j = 0; j < yellowParticles.length; j++) {
+            if (redParticles[i].checkCollision(yellowParticles[j])) {
+              redParticles[i].collideWith(yellowParticles[j]);
+            }
+          }
+        }
+        
+        // Draw all particles
+        allParticles.forEach(particle => {
+          particle.draw(ctx);
+        });
+        
+        // Add subtle powder clouds
         ctx.save();
-        ctx.globalCompositeOperation = 'source-over';
-        ctx.globalAlpha = 0.05;
+        ctx.globalAlpha = 0.03;
         redParticles.forEach(particle => {
           ctx.fillStyle = '#E65100';
+          ctx.filter = 'blur(10px)';
           ctx.beginPath();
-          ctx.arc(particle.x, particle.y, 15, 0, Math.PI * 2);
+          ctx.arc(particle.x, particle.y, 20, 0, Math.PI * 2);
           ctx.fill();
         });
         yellowParticles.forEach(particle => {
           ctx.fillStyle = '#FFB74D';
+          ctx.filter = 'blur(10px)';
           ctx.beginPath();
-          ctx.arc(particle.x, particle.y, 15, 0, Math.PI * 2);
+          ctx.arc(particle.x, particle.y, 20, 0, Math.PI * 2);
           ctx.fill();
         });
         ctx.restore();
       }
-      // Phase 2: Collision effect (2-3s)
-      else if (elapsed < 3) {
+      // Phase 2: Collision and settling (2-3.5s)
+      else if (elapsed < 3.5) {
         if (animationPhase === 0) {
           animationPhase = 1;
-          console.log('Starting collision phase');
+          console.log('Starting collision and settling phase');
         }
         
-        // Create powder explosion at center
-        const collisionProgress = (elapsed - 2) / 1;
-        
+        // Continue physics simulation
         allParticles.forEach(particle => {
-          const centerX = canvas.width / 2;
-          const centerY = canvas.height / 2;
-          const distance = Math.sqrt((particle.x - centerX) ** 2 + (particle.y - centerY) ** 2);
-          
-          if (distance < 150) {
-            // Particles in collision zone get scattered
-            particle.vx += (Math.random() - 0.5) * 0.5;
-            particle.vy += (Math.random() - 0.5) * 0.5;
-            particle.alpha = Math.max(0.3, particle.alpha);
-          }
-          
           particle.update();
-          particle.draw(ctx, false); // Keep particles visible during collision
+          
+          // Particles settle when they slow down enough
+          if (!particle.settled && Math.abs(particle.vx) < 0.1 && Math.abs(particle.vy) < 0.1) {
+            particle.settled = true;
+          }
+        });
+        
+        // Continue collision detection
+        for (let i = 0; i < redParticles.length; i++) {
+          for (let j = 0; j < yellowParticles.length; j++) {
+            if (redParticles[i].checkCollision(yellowParticles[j])) {
+              redParticles[i].collideWith(yellowParticles[j]);
+            }
+          }
+        }
+
+        allParticles.forEach(particle => {
+          particle.draw(ctx);
         });
 
-        // Add massive powder burst effect
+        // Collision effects
+        const collisionProgress = (elapsed - 2) / 1.5;
         ctx.save();
-        ctx.globalAlpha = Math.sin(collisionProgress * Math.PI) * 0.6;
-        ctx.filter = 'blur(15px)';
+        ctx.globalAlpha = Math.sin(collisionProgress * Math.PI) * 0.2;
+        ctx.filter = 'blur(20px)';
         ctx.fillStyle = '#FFFFFF';
         ctx.beginPath();
-        ctx.arc(canvas.width / 2, canvas.height / 2, 100 * collisionProgress, 0, Math.PI * 2);
+        ctx.arc(canvas.width / 2, canvas.height / 2, 80 * collisionProgress, 0, Math.PI * 2);
         ctx.fill();
-        
-        // Multiple explosion rings
-        for (let i = 0; i < 3; i++) {
-          ctx.globalAlpha = Math.sin(collisionProgress * Math.PI) * (0.3 - i * 0.1);
-          ctx.beginPath();
-          ctx.arc(canvas.width / 2, canvas.height / 2, (80 + i * 30) * collisionProgress, 0, Math.PI * 2);
-          ctx.fill();
-        }
         ctx.restore();
       }
-      // Phase 3: Smooth text formation (3-4.5s)
-      else if (elapsed < 4.5) {
+      // Phase 3: Natural text formation (3.5-5s)
+      else if (elapsed < 5) {
         if (animationPhase === 1) {
           animationPhase = 2;
           textPoints = getTextPoints('SPICE BAZAAR', Math.min(120, canvas.width / 10));
-          console.log('Starting text formation, text points:', textPoints.length);
+          console.log('Starting natural text formation, text points:', textPoints.length);
           
-          // Smoothly assign nearest particles to text points
+          // Only assign settled particles to text formation
+          const settledParticles = allParticles.filter(p => p.settled);
           textPoints.forEach((point, pointIndex) => {
-            let nearestParticle = null;
-            let minDistance = Infinity;
-            
-            allParticles.forEach(particle => {
-              if (!particle.isForming) {
-                const distance = Math.sqrt((particle.x - point.x) ** 2 + (particle.y - point.y) ** 2);
-                if (distance < minDistance) {
-                  minDistance = distance;
-                  nearestParticle = particle;
-                }
-              }
-            });
-            
-            if (nearestParticle) {
-              nearestParticle.targetX = point.x;
-              nearestParticle.targetY = point.y;
-              nearestParticle.isForming = true;
-              nearestParticle.size = 1.5; // Slightly larger for text visibility
-              nearestParticle.alpha = 1;
+            if (pointIndex < settledParticles.length) {
+              const particle = settledParticles[pointIndex];
+              particle.targetX = point.x;
+              particle.targetY = point.y;
+              particle.isForming = true;
+              particle.alpha = 1;
             }
           });
           
-          // Fade out unassigned particles
+          // Fade out excess particles
           allParticles.forEach(particle => {
             if (!particle.isForming) {
-              particle.alpha *= 0.95;
+              particle.alpha *= 0.98;
             }
           });
         }
 
-        const formationProgress = (elapsed - 3) / 1.5;
+        const formationProgress = (elapsed - 3.5) / 1.5;
         
         allParticles.forEach(particle => {
           particle.update();
           if (particle.alpha > 0.1) {
-            particle.draw(ctx, !particle.isForming); // Blur non-forming particles
+            particle.draw(ctx);
           }
         });
 
-        // Gradually show text outline
-        if (formationProgress > 0.5) {
+        // Gradually show text outline when particles are close
+        if (formationProgress > 0.6) {
           ctx.save();
           ctx.globalAlpha = (formationProgress - 0.5) * 2;
           ctx.font = `bold ${Math.min(120, canvas.width / 10)}px Orbitron, monospace`;
