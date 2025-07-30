@@ -115,28 +115,31 @@ export const SpiceCollisionAnimation = () => {
       draw(ctx: CanvasRenderingContext2D) {
         ctx.save();
         ctx.globalAlpha = this.alpha;
-        ctx.fillStyle = this.color;
         
-        // Add blur for spice-like appearance
-        ctx.filter = 'blur(0.5px)';
-        ctx.shadowBlur = 1;
+        // Make particles more visible with stronger colors
+        ctx.fillStyle = this.color;
+        ctx.shadowBlur = 3;
         ctx.shadowColor = this.color;
+        
+        // Add slight blur for spice texture but keep visible
+        ctx.filter = 'blur(0.3px)';
         
         ctx.translate(this.x, this.y);
         ctx.rotate(this.rotation);
         
-        // Draw different spice particle shapes
+        // Draw different spice particle shapes - make them bigger for visibility
         ctx.beginPath();
+        const renderSize = this.size * 2; // Double the visual size
         switch (this.shape) {
           case 'circle':
-            ctx.arc(0, 0, this.size, 0, Math.PI * 2);
+            ctx.arc(0, 0, renderSize, 0, Math.PI * 2);
             break;
           case 'oval':
-            ctx.ellipse(0, 0, this.size, this.size * 0.6, 0, 0, Math.PI * 2);
+            ctx.ellipse(0, 0, renderSize, renderSize * 0.6, 0, 0, Math.PI * 2);
             break;
           case 'grain':
             // Grain-like elongated shape
-            ctx.ellipse(0, 0, this.size * 0.4, this.size * 1.2, 0, 0, Math.PI * 2);
+            ctx.ellipse(0, 0, renderSize * 0.4, renderSize * 1.2, 0, 0, Math.PI * 2);
             break;
         }
         ctx.fill();
@@ -148,27 +151,27 @@ export const SpiceCollisionAnimation = () => {
     const redParticles: Particle[] = [];
     const yellowParticles: Particle[] = [];
 
-    // Generate red powder cloud from left (more particles, smaller size)
-    for (let i = 0; i < 2000; i++) {
+    // Generate red powder cloud from left (more particles, better visibility)
+    for (let i = 0; i < 1500; i++) {
       redParticles.push(new Particle(
-        -100 - Math.random() * 300,
-        canvas.height / 2 + (Math.random() - 0.5) * canvas.height * 0.6,
-        3 + Math.random() * 4, // Higher initial velocity for throwing effect
-        (Math.random() - 0.5) * 2,
-        `hsl(${Math.random() * 15}, 100%, ${60 + Math.random() * 30}%)`,
-        0.8 + Math.random() * 1.2 // Smaller, more realistic spice size
+        -150 - Math.random() * 200,
+        canvas.height / 2 + (Math.random() - 0.5) * canvas.height * 0.4,
+        2.5 + Math.random() * 3, // Strong throwing velocity
+        (Math.random() - 0.5) * 1.5,
+        `hsl(${Math.random() * 20}, 100%, ${65 + Math.random() * 25}%)`, // Brighter colors
+        1.2 + Math.random() * 1.5 // Visible size
       ));
     }
 
     // Generate yellow powder cloud from right
-    for (let i = 0; i < 2000; i++) {
+    for (let i = 0; i < 1500; i++) {
       yellowParticles.push(new Particle(
-        canvas.width + 100 + Math.random() * 300,
-        canvas.height / 2 + (Math.random() - 0.5) * canvas.height * 0.6,
-        -3 - Math.random() * 4, // Higher initial velocity for throwing effect
-        (Math.random() - 0.5) * 2,
-        `hsl(${50 + Math.random() * 10}, 100%, ${60 + Math.random() * 30}%)`,
-        0.8 + Math.random() * 1.2 // Smaller, more realistic spice size
+        canvas.width + 150 + Math.random() * 200,
+        canvas.height / 2 + (Math.random() - 0.5) * canvas.height * 0.4,
+        -2.5 - Math.random() * 3, // Strong throwing velocity
+        (Math.random() - 0.5) * 1.5,
+        `hsl(${50 + Math.random() * 15}, 100%, ${65 + Math.random() * 25}%)`, // Brighter colors
+        1.2 + Math.random() * 1.5 // Visible size
       ));
     }
 
@@ -209,7 +212,7 @@ export const SpiceCollisionAnimation = () => {
       const currentTime = Date.now();
       const elapsed = (currentTime - startTime) / 1000;
 
-      // Clear canvas completely each frame for crisp animation
+      // Clear canvas completely for better visibility
       ctx.fillStyle = 'rgba(0, 0, 0, 1)';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
@@ -231,26 +234,27 @@ export const SpiceCollisionAnimation = () => {
           }
         }
         
-        // Draw all particles
+        // Draw all particles with high visibility
         allParticles.forEach(particle => {
           particle.draw(ctx);
         });
         
-        // Add subtle powder clouds
+        // Debug: Add particle count to see if they exist
         ctx.save();
-        ctx.globalAlpha = 0.03;
-        redParticles.forEach(particle => {
-          ctx.fillStyle = '#E65100';
-          ctx.filter = 'blur(10px)';
+        ctx.fillStyle = 'white';
+        ctx.font = '16px Arial';
+        ctx.fillText(`Red: ${redParticles.length}, Yellow: ${yellowParticles.length}`, 10, 30);
+        ctx.fillText(`Phase: ${animationPhase}, Time: ${elapsed.toFixed(1)}s`, 10, 50);
+        ctx.restore();
+        
+        // Add minimal powder clouds for atmosphere
+        ctx.save();
+        ctx.globalAlpha = 0.02;
+        redParticles.slice(0, 50).forEach(particle => {
+          ctx.fillStyle = '#FF4444';
+          ctx.filter = 'blur(8px)';
           ctx.beginPath();
-          ctx.arc(particle.x, particle.y, 20, 0, Math.PI * 2);
-          ctx.fill();
-        });
-        yellowParticles.forEach(particle => {
-          ctx.fillStyle = '#FFB74D';
-          ctx.filter = 'blur(10px)';
-          ctx.beginPath();
-          ctx.arc(particle.x, particle.y, 20, 0, Math.PI * 2);
+          ctx.arc(particle.x, particle.y, 15, 0, Math.PI * 2);
           ctx.fill();
         });
         ctx.restore();
