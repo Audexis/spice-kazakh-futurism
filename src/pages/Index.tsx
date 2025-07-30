@@ -121,26 +121,26 @@ const Index = () => {
           <div className="container mx-auto px-4 h-16 flex items-center justify-between">
             <div className="flex items-center space-x-3">
               <div className="w-8 h-8 bg-gradient-to-br from-primary to-primary/80 rounded-lg"></div>
-              <h1 className="text-xl font-semibold text-primary-gradient">Spice Bazaar</h1>
+              <h1 className="text-xl font-orbitron font-semibold text-primary-gradient">SPICE BAZAAR</h1>
             </div>
             
             <Button
               variant="outline"
               size="sm"
               onClick={() => setIsAdmin(!isAdmin)}
-              className="focus-ring bg-background/80"
+              className="focus-ring bg-background/80 font-exo"
             >
-              {isAdmin ? '👤 User' : '🔧 Admin'}
+              {isAdmin ? '👤 USER' : '🔧 ADMIN'}
             </Button>
           </div>
         </nav>
 
         {/* Subtitle overlay */}
         <div className="absolute bottom-32 left-1/2 transform -translate-x-1/2 text-center z-40">
-          <p className="text-lg text-muted-foreground max-w-xl mx-auto mb-4">
+          <p className="text-lg text-muted-foreground max-w-xl mx-auto mb-4 font-exo">
             Experience authentic Indian flavors with our curated selection of premium spices and traditional ingredients
           </p>
-          <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
+          <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground font-exo">
             <Star className="h-4 w-4 fill-current text-yellow-500" />
             <span>4.9/5 from 500+ customers in Kazakhstan</span>
           </div>
@@ -164,10 +164,10 @@ const Index = () => {
           {/* Search Section */}
           <div className="animate-on-scroll opacity-0">
             <div className="text-center mb-8">
-              <h2 className="text-3xl font-bold text-primary-gradient mb-4">
-                Browse Our Collection
+              <h2 className="text-3xl font-orbitron font-bold text-primary-gradient mb-4">
+                BROWSE COLLECTION
               </h2>
-              <p className="text-muted-foreground max-w-2xl mx-auto">
+              <p className="text-muted-foreground max-w-2xl mx-auto font-exo">
                 Find the perfect spices and ingredients for your culinary adventures
               </p>
             </div>
