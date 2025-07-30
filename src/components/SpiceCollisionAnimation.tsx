@@ -59,14 +59,14 @@ export const SpiceCollisionAnimation = () => {
         ctx.save();
         ctx.globalAlpha = this.alpha;
         
-        if (blurEffect) {
-          // Create powder cloud effect with blur
-          ctx.filter = 'blur(1px)';
-          ctx.shadowBlur = 3;
-          ctx.shadowColor = this.color;
+        if (blurEffect && this.size < 1) {
+          // Only blur very small particles
+          ctx.filter = 'blur(0.5px)';
         }
         
         ctx.fillStyle = this.color;
+        ctx.shadowBlur = 2;
+        ctx.shadowColor = this.color;
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
         ctx.fill();
@@ -85,8 +85,8 @@ export const SpiceCollisionAnimation = () => {
         canvas.height / 2 + (Math.random() - 0.5) * canvas.height * 0.6,
         1.5 + Math.random() * 2,
         (Math.random() - 0.5) * 1.5,
-        `hsl(${Math.random() * 15}, ${80 + Math.random() * 20}%, ${45 + Math.random() * 25}%)`,
-        0.5 + Math.random() * 1 // Much smaller particles
+        `hsl(${Math.random() * 15}, 100%, ${60 + Math.random() * 30}%)`, // Brighter red
+        1.5 + Math.random() * 2 // Larger particles
       ));
     }
 
@@ -97,8 +97,8 @@ export const SpiceCollisionAnimation = () => {
         canvas.height / 2 + (Math.random() - 0.5) * canvas.height * 0.6,
         -1.5 - Math.random() * 2,
         (Math.random() - 0.5) * 1.5,
-        `hsl(${50 + Math.random() * 10}, ${80 + Math.random() * 20}%, ${45 + Math.random() * 25}%)`,
-        0.5 + Math.random() * 1 // Much smaller particles
+        `hsl(${50 + Math.random() * 10}, 100%, ${60 + Math.random() * 30}%)`, // Brighter yellow
+        1.5 + Math.random() * 2 // Larger particles
       ));
     }
 
@@ -147,24 +147,27 @@ export const SpiceCollisionAnimation = () => {
       if (elapsed < 2) {
         animationPhase = 0;
         
-        // Draw powder clouds with density clustering
+        // Draw powder clouds clearly visible
         allParticles.forEach(particle => {
           particle.update();
-          particle.draw(ctx, true); // Enable blur effect for powder look
+          particle.draw(ctx, false); // No blur effect initially
         });
         
-        // Add density clouds effect
+        // Add subtle density effect without hiding particles
         ctx.save();
-        ctx.globalCompositeOperation = 'screen';
-        allParticles.forEach(particle => {
-          if (Math.random() < 0.1) { // Only some particles contribute to density
-            ctx.globalAlpha = 0.1;
-            ctx.fillStyle = particle.color;
-            ctx.filter = 'blur(8px)';
-            ctx.beginPath();
-            ctx.arc(particle.x, particle.y, 20, 0, Math.PI * 2);
-            ctx.fill();
-          }
+        ctx.globalCompositeOperation = 'source-over';
+        ctx.globalAlpha = 0.05;
+        redParticles.forEach(particle => {
+          ctx.fillStyle = '#E65100';
+          ctx.beginPath();
+          ctx.arc(particle.x, particle.y, 15, 0, Math.PI * 2);
+          ctx.fill();
+        });
+        yellowParticles.forEach(particle => {
+          ctx.fillStyle = '#FFB74D';
+          ctx.beginPath();
+          ctx.arc(particle.x, particle.y, 15, 0, Math.PI * 2);
+          ctx.fill();
         });
         ctx.restore();
       }
@@ -191,7 +194,7 @@ export const SpiceCollisionAnimation = () => {
           }
           
           particle.update();
-          particle.draw(ctx, true);
+          particle.draw(ctx, false); // Keep particles visible during collision
         });
 
         // Add massive powder burst effect
