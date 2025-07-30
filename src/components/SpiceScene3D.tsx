@@ -85,7 +85,6 @@ const SpiceJar = ({ position, color, label }: { position: [number, number, numbe
             anchorY="middle"
             outlineWidth={0.01}
             outlineColor="#4FC3F7"
-            font-family="Orbitron"
           >
             {label}
           </Text>
@@ -203,7 +202,6 @@ const SpiceScene3D = () => {
             anchorY="middle"
             outlineWidth={0.02}
             outlineColor="#4FC3F7"
-            font-family="Orbitron"
           >
             SPICE BAZAAR
           </Text>
@@ -218,7 +216,6 @@ const SpiceScene3D = () => {
             anchorY="middle"
             outlineWidth={0.01}
             outlineColor="#ffffff"
-            font-family="Exo 2"
           >
             KAZAKHSTAN
           </Text>
