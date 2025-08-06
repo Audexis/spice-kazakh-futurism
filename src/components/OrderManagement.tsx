@@ -12,14 +12,14 @@ type OrderStatus = "pending" | "confirmed" | "preparing" | "in_transit" | "deliv
 
 interface Order {
   id: string;
-  user_email: string;
+  customer_email: string;
   total_amount: number;
   status: OrderStatus;
   admin_notes: string | null;
   created_at: string;
   status_updated_at: string;
-  items: Array<{
-    product_name: string;
+  order_items: Array<{
+    product_id: string;
     quantity: number;
     price: number;
   }>;
@@ -41,13 +41,13 @@ export const OrderManagement = () => {
         .from('orders')
         .select(`
           id, 
-          user_email, 
+          customer_email, 
           total_amount, 
           status, 
           admin_notes, 
           created_at, 
           status_updated_at,
-          items (product_name, quantity, price)
+          order_items (product_id, quantity, price)
         `)
         .order('created_at', { ascending: false });
 
@@ -149,7 +149,7 @@ export const OrderManagement = () => {
                 <CardTitle>Order ID: {order.id}</CardTitle>
               </CardHeader>
               <CardContent className="space-y-2">
-                <p>User Email: {order.user_email}</p>
+                <p>Customer Email: {order.customer_email}</p>
                 <p>Total Amount: ${order.total_amount}</p>
                 <Badge variant="secondary">{order.status}</Badge>
                 <p>Created At: {new Date(order.created_at).toLocaleString()}</p>
@@ -157,9 +157,9 @@ export const OrderManagement = () => {
                 <div>
                   <h3 className="text-sm font-semibold">Items:</h3>
                   <ul>
-                    {order.items.map((item, index) => (
+                    {order.order_items.map((item, index) => (
                       <li key={index} className="text-xs">
-                        {item.quantity} x {item.product_name} - ${item.price}
+                        {item.quantity} x Product ID: {item.product_id} - ${item.price}
                       </li>
                     ))}
                   </ul>
