@@ -1,7 +1,7 @@
 
 import { useState } from "react";
 import { Navbar } from "@/components/Navbar";
-import SpiceScene3D from "@/components/SpiceScene3D";
+import { PhysicsSpiceScene } from "@/components/PhysicsSpiceScene";
 import { CategoryFilter } from "@/components/CategoryFilter";
 import { SpiceCard } from "@/components/SpiceCard";
 import { AdminPanel } from "@/components/AdminPanel";
@@ -101,7 +101,7 @@ const Index = () => {
       {/* Hero Section */}
       <div className="relative overflow-hidden">
         <div className="absolute inset-0 z-0">
-          <SpiceScene3D />
+          <PhysicsSpiceScene />
         </div>
         
         <div className="relative z-10 container mx-auto px-4 py-32 text-center">
