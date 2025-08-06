@@ -34,6 +34,7 @@ export function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
       return;
     }
 
+    playSuccessSound();
     setIsSubmitting(true);
 
     try {
@@ -82,7 +83,6 @@ export function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
 
       setOrderPlaced(true);
       clearCart();
-      playSuccessSound();
       
       toast({
         title: 'Order Placed Successfully!',
