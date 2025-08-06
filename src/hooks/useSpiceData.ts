@@ -16,6 +16,8 @@ export interface Product {
   price: number;
   image_url?: string;
   category_id: string;
+  rating?: number;
+  review_count?: number;
   category?: Category;
 }
 

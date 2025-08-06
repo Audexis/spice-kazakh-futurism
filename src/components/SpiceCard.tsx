@@ -1,10 +1,16 @@
-import { useState, useEffect } from 'react';
-import { Card, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { ShoppingCart, Edit, Trash2 } from 'lucide-react';
-import { Product } from '@/hooks/useSpiceData';
-import anime from 'animejs';
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Product } from "@/hooks/useSpiceData";
+import { MoreHorizontal, Edit, Trash2, Star } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 interface SpiceCardProps {
   product: Product;
@@ -14,134 +20,132 @@ interface SpiceCardProps {
 }
 
 export const SpiceCard = ({ product, isAdmin, onEdit, onDelete }: SpiceCardProps) => {
-  const [cardRef, setCardRef] = useState<HTMLDivElement | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
-  useEffect(() => {
-    if (cardRef) {
-      // Animate card entrance
-      anime({
-        targets: cardRef,
-        opacity: [0, 1],
-        translateY: [50, 0],
-        scale: [0.8, 1],
-        duration: 800,
-        easing: 'easeOutElastic(1, .5)',
-        delay: Math.random() * 200
-      });
-    }
-  }, [cardRef]);
-
-  const handleWhatsAppOrder = () => {
-    const message = `Hello, I'm interested in buying ${product.name} from your Kazakh e-store. Please provide more details.`;
-    const encodedMessage = encodeURIComponent(message);
-    const whatsappUrl = `https://wa.me/+91XXXXXXXXXX?text=${encodedMessage}`;
-    window.open(whatsappUrl, '_blank');
+  const renderStars = (rating: number) => {
+    return Array.from({ length: 5 }, (_, i) => (
+      <Star
+        key={i}
+        className={`h-3 w-3 ${
+          i < Math.floor(rating)
+            ? 'fill-yellow-400 text-yellow-400'
+            : 'text-gray-300'
+        }`}
+      />
+    ));
   };
 
-  const handleCardHover = () => {
-    if (cardRef) {
-      anime({
-        targets: cardRef,
-        scale: 1.05,
-        rotateY: 5,
-        rotateX: 5,
-        duration: 300,
-        easing: 'easeOutQuart'
-      });
-    }
-  };
-
-  const handleCardLeave = () => {
-    if (cardRef) {
-      anime({
-        targets: cardRef,
-        scale: 1,
-        rotateY: 0,
-        rotateX: 0,
-        duration: 300,
-        easing: 'easeOutQuart'
-      });
+  const handleDelete = async () => {
+    if (!onDelete) return;
+    setIsDeleting(true);
+    try {
+      await onDelete(product.id);
+    } finally {
+      setIsDeleting(false);
     }
   };
 
   return (
-    <Card 
-      ref={setCardRef}
-      className="glass-card card-3d group overflow-hidden hover:shadow-2xl transition-all duration-500"
-      onMouseEnter={handleCardHover}
-      onMouseLeave={handleCardLeave}
-    >
-      <div className="relative aspect-square overflow-hidden rounded-t-2xl">
-        {product.image_url ? (
-          <img
-            src={product.image_url}
-            alt={product.name}
-            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-          />
-        ) : (
-          <div className="w-full h-full bg-gradient-to-br from-spice-saffron to-spice-paprika flex items-center justify-center">
-            <span className="text-6xl opacity-20">🌶️</span>
+    <Card className="group hover:shadow-lg transition-all duration-200 hover:-translate-y-1">
+      <Link to={`/product/${product.id}`} className="block">
+        <CardHeader className="pb-3">
+          <div className="aspect-square mb-3 overflow-hidden rounded-lg bg-muted">
+            {product.image_url ? (
+              <img
+                src={product.image_url}
+                alt={product.name}
+                className="w-full h-full object-cover transition-transform duration-200 group-hover:scale-105"
+              />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center text-4xl text-muted-foreground">
+                📦
+              </div>
+            )}
           </div>
-        )}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-        
-        {isAdmin && (
-          <div className="absolute top-2 right-2 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-            <Button 
-              size="sm" 
-              variant="secondary" 
-              className="glass h-8 w-8 p-0"
-              onClick={() => onEdit?.(product)}
-            >
-              <Edit className="h-4 w-4" />
-            </Button>
-            <Button 
-              size="sm" 
-              variant="destructive" 
-              className="h-8 w-8 p-0"
-              onClick={() => onDelete?.(product.id)}
-            >
-              <Trash2 className="h-4 w-4" />
-            </Button>
+          
+          <div className="space-y-2">
+            <div className="flex items-start justify-between">
+              <CardTitle className="text-lg leading-tight line-clamp-2">
+                {product.name}
+              </CardTitle>
+              {isAdmin && (
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild onClick={(e) => e.preventDefault()}>
+                    <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                      <MoreHorizontal className="h-4 w-4" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuItem
+                      onClick={(e) => {
+                        e.preventDefault();
+                        onEdit?.(product);
+                      }}
+                    >
+                      <Edit className="mr-2 h-4 w-4" />
+                      Edit
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={(e) => {
+                        e.preventDefault();
+                        handleDelete();
+                      }}
+                      className="text-destructive"
+                      disabled={isDeleting}
+                    >
+                      <Trash2 className="mr-2 h-4 w-4" />
+                      {isDeleting ? 'Deleting...' : 'Delete'}
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              )}
+            </div>
+
+            {product.category && (
+              <Badge variant="secondary" className="text-xs">
+                {product.category.name}
+              </Badge>
+            )}
+
+            {/* Rating */}
+            {product.rating && product.review_count && (
+              <div className="flex items-center space-x-1">
+                <div className="flex items-center">
+                  {renderStars(product.rating)}
+                </div>
+                <span className="text-xs text-muted-foreground">
+                  {product.rating.toFixed(1)} ({product.review_count})
+                </span>
+              </div>
+            )}
           </div>
-        )}
+        </CardHeader>
+      </Link>
 
-        <Badge className="absolute top-2 left-2 bg-gradient-to-r from-spice-saffron to-spice-turmeric text-black font-semibold">
-          {product.category?.name}
-        </Badge>
-      </div>
-
-      <CardContent className="p-6 space-y-4">
-        <div>
-          <h3 className="text-xl font-bold text-gradient-primary group-hover:text-gradient-cosmic transition-all duration-300">
-            {product.name}
-          </h3>
+      <CardContent className="pt-0">
+        <div className="space-y-3">
+          {product.description && (
+            <p className="text-sm text-muted-foreground line-clamp-2">
+              {product.description}
+            </p>
+          )}
+          
           {product.manufacturer && (
-            <p className="text-sm text-muted-foreground font-medium">
+            <p className="text-xs text-muted-foreground">
               by {product.manufacturer}
             </p>
           )}
-        </div>
-
-        {product.description && (
-          <p className="text-sm text-muted-foreground line-clamp-2">
-            {product.description}
-          </p>
-        )}
-
-        <div className="flex items-center justify-between pt-2">
-          <div className="text-2xl font-bold text-gradient-spice">
-            ₸{product.price.toFixed(2)}
-          </div>
           
-          <Button 
-            onClick={handleWhatsAppOrder}
-            className="btn-futuristic relative z-10"
-            size="sm"
-          >
-            <ShoppingCart className="h-4 w-4 mr-2" />
-            Buy Now
-          </Button>
+          <div className="flex items-center justify-between">
+            <span className="text-lg font-bold text-primary">
+              ${product.price.toFixed(2)}
+            </span>
+            <Link to={`/product/${product.id}`}>
+              <Button size="sm" className="hover-scale">
+                View Details
+              </Button>
+            </Link>
+          </div>
         </div>
       </CardContent>
     </Card>

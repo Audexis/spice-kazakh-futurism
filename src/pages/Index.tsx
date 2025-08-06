@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo, useRef } from 'react';
+import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
@@ -8,6 +9,7 @@ import { CategoryFilter } from '@/components/CategoryFilter';
 import { SpiceCollisionAnimation } from '@/components/SpiceCollisionAnimation';
 import { FuturisticScrollHint } from '@/components/FuturisticScrollHint';
 import { AdminPanel } from '@/components/AdminPanel';
+import { Navbar } from '@/components/Navbar';
 import { useSpiceData } from '@/hooks/useSpiceData';
 import { useToast } from '@/hooks/use-toast';
 import anime from 'animejs';
@@ -20,22 +22,22 @@ const Index = () => {
   const { categories, products, loading, deleteProduct, refetch } = useSpiceData();
   const { toast } = useToast();
 
-  const filteredProducts = useMemo(() => {
-    let filtered = products;
-    
-    if (selectedCategory) {
-      filtered = filtered.filter(product => product.category_id === selectedCategory);
-    }
-    
-    if (searchQuery) {
-      filtered = filtered.filter(product =>
-        product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        product.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        product.manufacturer?.toLowerCase().includes(searchQuery.toLowerCase())
-      );
-    }
-    
-    return filtered;
+  // Show only top 10 highest rated products on home page
+  const topRatedProducts = useMemo(() => {
+    return products
+      .sort((a, b) => (b.rating || 0) - (a.rating || 0))
+      .slice(0, 10)
+      .filter(product => {
+        if (selectedCategory) {
+          return product.category_id === selectedCategory;
+        }
+        if (searchQuery) {
+          return product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                 product.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                 product.manufacturer?.toLowerCase().includes(searchQuery.toLowerCase());
+        }
+        return true;
+      });
   }, [products, selectedCategory, searchQuery]);
 
   useEffect(() => {
@@ -106,6 +108,14 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      {/* Navigation */}
+      <Navbar 
+        isAdmin={isAdmin}
+        onAdminToggle={() => setIsAdmin(!isAdmin)}
+        searchQuery={searchQuery}
+        onSearchChange={setSearchQuery}
+      />
+
       {/* Immersive 3D Hero Section */}
       <section className="h-screen relative overflow-hidden bg-background">
         {/* Background gradient */}
@@ -114,27 +124,11 @@ const Index = () => {
         {/* Spice Collision Animation */}
         <SpiceCollisionAnimation />
 
-        {/* Navigation overlay */}
-        <nav className="absolute top-0 left-0 right-0 z-50 border-b border-border/20 backdrop-blur-md bg-background/60">
-          <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <div className="w-8 h-8 bg-gradient-to-br from-primary to-primary/80 rounded-lg"></div>
-              <h1 className="text-xl font-orbitron font-semibold text-primary-gradient">SPICE BAZAAR</h1>
-            </div>
-            
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setIsAdmin(!isAdmin)}
-              className="focus-ring bg-background/80 font-exo"
-            >
-              {isAdmin ? '👤 USER' : '🔧 ADMIN'}
-            </Button>
-          </div>
-        </nav>
-
         {/* Subtitle overlay */}
         <div className="absolute bottom-32 left-1/2 transform -translate-x-1/2 text-center z-40">
+          <h1 className="text-5xl font-orbitron font-bold text-primary-gradient mb-4">
+            SPICE BAZAAR
+          </h1>
           <p className="text-lg text-muted-foreground max-w-xl mx-auto mb-4 font-exo">
             Experience authentic Indian flavors with our curated selection of premium spices and traditional ingredients
           </p>
@@ -159,43 +153,34 @@ const Index = () => {
         </div>
 
         <main className="relative container mx-auto px-4 py-20 space-y-16">
-          {/* Search Section */}
+          {/* Featured Products Section */}
           <div className="animate-on-scroll">
             <div className="text-center mb-8">
               <h2 className="text-3xl font-orbitron font-bold text-primary-gradient mb-4">
-                BROWSE COLLECTION
+                TOP RATED PRODUCTS
               </h2>
-              <p className="text-muted-foreground max-w-2xl mx-auto font-exo">
-                Find the perfect spices and ingredients for your culinary adventures
+              <p className="text-muted-foreground max-w-2xl mx-auto font-exo mb-6">
+                Discover our most loved spices and ingredients, highly rated by customers across Kazakhstan
               </p>
+              <Link to="/marketplace">
+                <Button variant="outline" className="mb-8">
+                  View Full Marketplace →
+                </Button>
+              </Link>
             </div>
-            
-            <div className="card-modern max-w-md mx-auto">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                <Input
-                  placeholder="Search products..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10 focus-ring"
-                />
-              </div>
+
+            {/* Quick Category Filter */}
+            <div className="flex justify-center">
+              <CategoryFilter 
+                categories={categories}
+                selectedCategory={selectedCategory}
+                onCategoryChange={setSelectedCategory}
+              />
             </div>
-          </div>
 
-          {/* Category Filter */}
-          <div className="animate-on-scroll">
-            <CategoryFilter 
-              categories={categories}
-              selectedCategory={selectedCategory}
-              onCategoryChange={setSelectedCategory}
-            />
-          </div>
-
-          {/* Products Grid */}
-          <div className="animate-on-scroll">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {filteredProducts.map((product) => (
+            {/* Products Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
+              {topRatedProducts.map((product) => (
                 <SpiceCard
                   key={product.id}
                   product={product}
@@ -212,7 +197,7 @@ const Index = () => {
               ))}
             </div>
 
-            {filteredProducts.length === 0 && (
+            {topRatedProducts.length === 0 && (
               <div className="text-center py-16">
                 <div className="text-6xl mb-4">🔍</div>
                 <h3 className="text-2xl font-bold text-muted-foreground mb-2">
