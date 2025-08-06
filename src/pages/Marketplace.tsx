@@ -1,209 +1,226 @@
-import { useState, useMemo } from 'react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { SpiceCard } from '@/components/SpiceCard';
-import { CategoryFilter } from '@/components/CategoryFilter';
-import { AdminPanel } from '@/components/AdminPanel';
-import { Navbar } from '@/components/Navbar';
-import { useSpiceData } from '@/hooks/useSpiceData';
-import { useToast } from '@/hooks/use-toast';
-import { Search } from 'lucide-react';
 
-export default function Marketplace() {
+import { useState } from "react";
+import { Navbar } from "@/components/Navbar";
+import { CategoryFilter } from "@/components/CategoryFilter";
+import { SpiceCard } from "@/components/SpiceCard";
+import { AdminPanel } from "@/components/AdminPanel";
+import { OrderManagement } from "@/components/OrderManagement";
+import { AdminProductEdit } from "@/components/AdminProductEdit";
+import { useSpiceData } from "@/hooks/useSpiceData";
+import { useAdminAuth } from "@/hooks/useAdminAuth";
+import { Button } from "@/components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Search, Filter } from "lucide-react";
+import { Product } from "@/hooks/useSpiceData";
+
+const Marketplace = () => {
+  const { categories, products, loading } = useSpiceData();
+  const { adminUser } = useAdminAuth();
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [sortBy, setSortBy] = useState<'name' | 'price-low' | 'price-high' | 'rating'>('name');
-  const [isAdmin, setIsAdmin] = useState(false);
-  const { categories, products, loading, deleteProduct, refetch } = useSpiceData();
-  const { toast } = useToast();
+  const [searchQuery, setSearchQuery] = useState("");
+  const [isAdminMode, setIsAdminMode] = useState(false);
+  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
 
-  const filteredAndSortedProducts = useMemo(() => {
-    let filtered = products;
+  // Filter products based on category and search query
+  const filteredProducts = products.filter(product => {
+    const matchesCategory = !selectedCategory || product.category_id === selectedCategory;
+    const matchesSearch = !searchQuery || 
+      product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      product.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      product.manufacturer?.toLowerCase().includes(searchQuery.toLowerCase());
     
-    // Filter by category
-    if (selectedCategory) {
-      filtered = filtered.filter(product => product.category_id === selectedCategory);
-    }
-    
-    // Filter by search query
-    if (searchQuery) {
-      filtered = filtered.filter(product =>
-        product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        product.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        product.manufacturer?.toLowerCase().includes(searchQuery.toLowerCase())
-      );
-    }
-    
-    // Sort products
-    const sorted = [...filtered].sort((a, b) => {
-      switch (sortBy) {
-        case 'price-low':
-          return a.price - b.price;
-        case 'price-high':
-          return b.price - a.price;
-        case 'rating':
-          return (b.rating || 0) - (a.rating || 0);
-        case 'name':
-        default:
-          return a.name.localeCompare(b.name);
-      }
-    });
-    
-    return sorted;
-  }, [products, selectedCategory, searchQuery, sortBy]);
+    return matchesCategory && matchesSearch;
+  });
 
-  const handleDeleteProduct = async (id: string) => {
-    try {
-      await deleteProduct(id);
-      toast({
-        title: 'Success',
-        description: 'Product deleted successfully',
-        variant: 'default'
-      });
-    } catch (error) {
-      toast({
-        title: 'Error',
-        description: 'Failed to delete product',
-        variant: 'destructive'
-      });
-    }
+  const handleProductUpdated = () => {
+    setEditingProduct(null);
   };
 
-  const handleProductAdded = () => {
-    refetch();
-  };
-
-  if (loading) {
+  if (isAdminMode && adminUser) {
     return (
-      <div className="min-h-screen bg-background">
-        <Navbar />
-        <div className="container mx-auto px-4 py-8">
-          <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-            <p className="text-muted-foreground">Loading marketplace...</p>
+      <>
+        <Navbar 
+          isAdmin={isAdminMode} 
+          onAdminToggle={() => setIsAdminMode(!isAdminMode)}
+          searchQuery={searchQuery}
+          onSearchChange={setSearchQuery}
+        />
+        <div className="min-h-screen bg-background">
+          <div className="container mx-auto px-4 py-8">
+            <div className="mb-8">
+              <h1 className="text-3xl font-bold font-orbitron text-primary-gradient mb-2">
+                Admin Dashboard
+              </h1>
+              <p className="text-muted-foreground">
+                Welcome back, {adminUser.name}
+              </p>
+            </div>
+
+            <Tabs defaultValue="orders" className="space-y-6">
+              <TabsList className="grid w-full grid-cols-2 max-w-md">
+                <TabsTrigger value="orders">Order Management</TabsTrigger>
+                <TabsTrigger value="products">Product Management</TabsTrigger>
+              </TabsList>
+              
+              <TabsContent value="orders">
+                <OrderManagement />
+              </TabsContent>
+              
+              <TabsContent value="products">
+                <div className="space-y-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                    {products.map((product) => (
+                      <div key={product.id} className="relative">
+                        <SpiceCard product={product} />
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => setEditingProduct(product)}
+                          className="absolute top-2 right-2 z-10 bg-background/90 backdrop-blur-sm"
+                        >
+                          Edit
+                        </Button>
+                      </div>
+                    ))}
+                  </div>
+                  <AdminPanel categories={categories} onProductAdded={handleProductUpdated} />
+                </div>
+              </TabsContent>
+            </Tabs>
           </div>
+
+          {editingProduct && (
+            <AdminProductEdit
+              product={editingProduct}
+              categories={categories}
+              isOpen={!!editingProduct}
+              onClose={() => setEditingProduct(null)}
+              onProductUpdated={handleProductUpdated}
+            />
+          )}
         </div>
-      </div>
+      </>
     );
   }
 
   return (
     <div className="min-h-screen bg-background">
       <Navbar 
-        isAdmin={isAdmin}
-        onAdminToggle={() => setIsAdmin(!isAdmin)}
+        isAdmin={isAdminMode} 
+        onAdminToggle={() => setIsAdminMode(!isAdminMode)}
         searchQuery={searchQuery}
         onSearchChange={setSearchQuery}
       />
-      
-      <div className="container mx-auto px-4 py-8 space-y-8">
-        {/* Page Header */}
-        <div className="text-center space-y-4">
-          <h1 className="text-4xl font-heading font-bold text-primary-gradient">
-            MARKETPLACE
-          </h1>
-          <p className="text-muted-foreground max-w-2xl mx-auto">
-            Discover our complete collection of authentic spices, grains, and traditional ingredients
-          </p>
-          <div className="text-sm text-muted-foreground">
-            Showing {filteredAndSortedProducts.length} of {products.length} products
+
+      {/* Header */}
+      <div className="bg-gradient-to-br from-primary/5 to-secondary/5 border-b border-border/20">
+        <div className="container mx-auto px-4 py-16">
+          <div className="text-center">
+            <h1 className="text-4xl md:text-6xl font-bold font-orbitron text-primary-gradient mb-6">
+              Spice Marketplace
+            </h1>
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+              Browse our complete collection of premium Kazakhstani spices and seasonings
+            </p>
           </div>
-        </div>
-
-        {/* Search Bar */}
-        <div className="relative max-w-md mx-auto">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
-          <Input
-            placeholder="Search products..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-10"
-          />
-        </div>
-
-        {/* Category Filter */}
-        <div className="space-y-4">
-          <h2 className="text-lg font-semibold text-center">Browse Categories</h2>
-          <div className="flex justify-center">
-            <CategoryFilter 
-              categories={categories} 
-              selectedCategory={selectedCategory} 
-              onCategoryChange={setSelectedCategory} 
-            />
-          </div>
-        </div>
-
-        {/* Products Section */}
-        <div className="space-y-6">
-          {/* Sort Controls */}
-          <div className="flex items-center justify-between">
-            <h2 className="text-xl font-semibold">Products</h2>
-            <div className="flex items-center space-x-2">
-              <span className="text-sm text-muted-foreground">Sort by:</span>
-              <Select value={sortBy} onValueChange={(value: any) => setSortBy(value)}>
-                <SelectTrigger className="w-[180px]">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="name">Name (A-Z)</SelectItem>
-                  <SelectItem value="price-low">Price (Low to High)</SelectItem>
-                  <SelectItem value="price-high">Price (High to Low)</SelectItem>
-                  <SelectItem value="rating">Rating (High to Low)</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-
-          {/* Products Grid */}
-          {filteredAndSortedProducts.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {filteredAndSortedProducts.map((product) => (
-                <SpiceCard
-                  key={product.id}
-                  product={product}
-                  isAdmin={isAdmin}
-                  onEdit={(product) => {
-                    toast({
-                      title: 'Edit Product',
-                      description: 'Edit functionality coming soon!',
-                      variant: 'default'
-                    });
-                  }}
-                  onDelete={handleDeleteProduct}
-                />
-              ))}
-            </div>
-          ) : (
-            <div className="text-center py-16">
-              <div className="text-6xl mb-4">🔍</div>
-              <h3 className="text-2xl font-bold text-muted-foreground mb-2">
-                No products found
-              </h3>
-              <p className="text-muted-foreground mb-6">
-                Try adjusting your search or filters
-              </p>
-              <Button 
-                variant="outline" 
-                onClick={() => {
-                  setSelectedCategory(null);
-                  setSearchQuery('');
-                }}
-              >
-                Clear Filters
-              </Button>
-            </div>
-          )}
         </div>
       </div>
 
-      {/* Admin Panel */}
-      {isAdmin && (
-        <AdminPanel 
+      {/* Filters and Products */}
+      <div className="container mx-auto px-4 py-8">
+        {/* Category Filter */}
+        <div className="mb-8">
+          <CategoryFilter
+            categories={categories}
+            selectedCategory={selectedCategory}
+            onCategoryChange={setSelectedCategory}
+          />
+        </div>
+
+        {/* Results Info */}
+        <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center gap-2 text-muted-foreground">
+            <Filter className="h-4 w-4" />
+            <span>
+              {filteredProducts.length} product{filteredProducts.length !== 1 ? 's' : ''} found
+            </span>
+          </div>
+          
+          {(selectedCategory || searchQuery) && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => {
+                setSelectedCategory(null);
+                setSearchQuery("");
+              }}
+            >
+              Clear Filters
+            </Button>
+          )}
+        </div>
+
+        {/* Products Grid */}
+        {loading ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {Array.from({ length: 8 }).map((_, i) => (
+              <div key={i} className="card-modern h-96 animate-pulse bg-muted/50" />
+            ))}
+          </div>
+        ) : filteredProducts.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {filteredProducts.map((product) => (
+              <div key={product.id} className="relative">
+                <SpiceCard product={product} />
+                {isAdminMode && adminUser && (
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => setEditingProduct(product)}
+                    className="absolute top-2 right-2 z-10 bg-background/90 backdrop-blur-sm"
+                  >
+                    Edit
+                  </Button>
+                )}
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-16">
+            <Search className="h-16 w-16 mx-auto text-muted-foreground/50 mb-4" />
+            <h3 className="text-2xl font-semibold mb-2">No products found</h3>
+            <p className="text-muted-foreground mb-6">
+              Try adjusting your search or filter criteria
+            </p>
+            <Button
+              variant="outline"
+              onClick={() => {
+                setSelectedCategory(null);
+                setSearchQuery("");
+              }}
+            >
+              View All Products
+            </Button>
+          </div>
+        )}
+
+        {/* Admin Panel for adding products */}
+        {isAdminMode && adminUser && (
+          <AdminPanel categories={categories} onProductAdded={handleProductUpdated} />
+        )}
+      </div>
+
+      {editingProduct && (
+        <AdminProductEdit
+          product={editingProduct}
           categories={categories}
-          onProductAdded={handleProductAdded}
+          isOpen={!!editingProduct}
+          onClose={() => setEditingProduct(null)}
+          onProductUpdated={handleProductUpdated}
         />
       )}
     </div>
   );
-}
+};
+
+export default Marketplace;

@@ -14,6 +14,33 @@ export type Database = {
   }
   public: {
     Tables: {
+      admin_users: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          name: string
+          password_hash: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: string
+          name: string
+          password_hash: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          name?: string
+          password_hash?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       categories: {
         Row: {
           created_at: string
@@ -85,33 +112,50 @@ export type Database = {
       }
       orders: {
         Row: {
+          admin_notes: string | null
           created_at: string
           customer_email: string
           customer_whatsapp: string
           id: string
-          status: string
+          status: Database["public"]["Enums"]["order_status"]
+          status_updated_at: string | null
           total_amount: number
           updated_at: string
+          updated_by_admin: string | null
         }
         Insert: {
+          admin_notes?: string | null
           created_at?: string
           customer_email: string
           customer_whatsapp: string
           id?: string
-          status?: string
+          status?: Database["public"]["Enums"]["order_status"]
+          status_updated_at?: string | null
           total_amount: number
           updated_at?: string
+          updated_by_admin?: string | null
         }
         Update: {
+          admin_notes?: string | null
           created_at?: string
           customer_email?: string
           customer_whatsapp?: string
           id?: string
-          status?: string
+          status?: Database["public"]["Enums"]["order_status"]
+          status_updated_at?: string | null
           total_amount?: number
           updated_at?: string
+          updated_by_admin?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "orders_updated_by_admin_fkey"
+            columns: ["updated_by_admin"]
+            isOneToOne: false
+            referencedRelation: "admin_users"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       products: {
         Row: {
@@ -209,7 +253,13 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      order_status:
+        | "pending"
+        | "confirmed"
+        | "preparing"
+        | "in_transit"
+        | "delivered"
+        | "cancelled"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -336,6 +386,15 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      order_status: [
+        "pending",
+        "confirmed",
+        "preparing",
+        "in_transit",
+        "delivered",
+        "cancelled",
+      ],
+    },
   },
 } as const

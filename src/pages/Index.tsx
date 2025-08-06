@@ -1,188 +1,163 @@
-import React, { useState, useEffect, useMemo, useRef } from 'react';
-import { Link } from 'react-router-dom';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Badge } from '@/components/ui/badge';
-import { Search, Globe, Star } from 'lucide-react';
-import { SpiceCard } from '@/components/SpiceCard';
-import { CategoryFilter } from '@/components/CategoryFilter';
-import { SpiceCollisionAnimation } from '@/components/SpiceCollisionAnimation';
-import { FuturisticScrollHint } from '@/components/FuturisticScrollHint';
-import { AdminPanel } from '@/components/AdminPanel';
-import { Navbar } from '@/components/Navbar';
-import { useSpiceData } from '@/hooks/useSpiceData';
-import { useToast } from '@/hooks/use-toast';
-import anime from 'animejs';
+
+import { useState } from "react";
+import { Navbar } from "@/components/Navbar";
+import { SpiceScene3D } from "@/components/SpiceScene3D";
+import { CategoryFilter } from "@/components/CategoryFilter";
+import { SpiceCard } from "@/components/SpiceCard";
+import { AdminPanel } from "@/components/AdminPanel";
+import { OrderManagement } from "@/components/OrderManagement";
+import { AdminProductEdit } from "@/components/AdminProductEdit";
+import { useSpiceData } from "@/hooks/useSpiceData";
+import { useAdminAuth } from "@/hooks/useAdminAuth";
+import { Button } from "@/components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Product } from "@/hooks/useSpiceData";
+
 const Index = () => {
+  const { categories, products, loading } = useSpiceData();
+  const { adminUser } = useAdminAuth();
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [isAdmin, setIsAdmin] = useState(false);
-  const contentRef = useRef<HTMLDivElement>(null);
-  const {
-    categories,
-    products,
-    loading,
-    deleteProduct,
-    refetch
-  } = useSpiceData();
-  const {
-    toast
-  } = useToast();
+  const [isAdminMode, setIsAdminMode] = useState(false);
+  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
 
-  // Show only top 10 highest rated products on home page
-  const topRatedProducts = useMemo(() => {
-    return products.sort((a, b) => (b.rating || 0) - (a.rating || 0)).slice(0, 10).filter(product => {
-      if (selectedCategory) {
-        return product.category_id === selectedCategory;
-      }
-      if (searchQuery) {
-        return product.name.toLowerCase().includes(searchQuery.toLowerCase()) || product.description?.toLowerCase().includes(searchQuery.toLowerCase()) || product.manufacturer?.toLowerCase().includes(searchQuery.toLowerCase());
-      }
-      return true;
-    });
-  }, [products, selectedCategory, searchQuery]);
-  useEffect(() => {
-    // Animate content sections on scroll
-    const observerOptions = {
-      threshold: 0.1,
-      rootMargin: '0px 0px -50px 0px'
-    };
-    const observer = new IntersectionObserver(entries => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          anime({
-            targets: entry.target,
-            opacity: [0, 1],
-            translateY: [50, 0],
-            duration: 800,
-            easing: 'easeOutQuart'
-          });
-        }
-      });
-    }, observerOptions);
-    const contentSections = document.querySelectorAll('.animate-on-scroll');
-    contentSections.forEach(section => observer.observe(section));
-    return () => observer.disconnect();
-  }, []);
-  const scrollToContent = () => {
-    contentRef.current?.scrollIntoView({
-      behavior: 'smooth',
-      block: 'start'
-    });
+  const filteredProducts = selectedCategory
+    ? products.filter(product => product.category_id === selectedCategory)
+    : products;
+
+  const handleProductUpdated = () => {
+    // The useSpiceData hook will automatically refresh
+    setEditingProduct(null);
   };
-  const handleDeleteProduct = async (id: string) => {
-    try {
-      await deleteProduct(id);
-      toast({
-        title: 'Success',
-        description: 'Product deleted successfully',
-        variant: 'default'
-      });
-    } catch (error) {
-      toast({
-        title: 'Error',
-        description: 'Failed to delete product',
-        variant: 'destructive'
-      });
-    }
-  };
-  const handleProductAdded = () => {
-    refetch();
-  };
-  if (loading) {
-    return <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center space-y-4">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
-          <p className="text-muted-foreground">Loading spice marketplace...</p>
-        </div>
-      </div>;
-  }
-  return <div className="min-h-screen bg-background">
-      {/* Navigation */}
-      <Navbar isAdmin={isAdmin} onAdminToggle={() => setIsAdmin(!isAdmin)} searchQuery={searchQuery} onSearchChange={setSearchQuery} />
 
-      {/* Immersive 3D Hero Section */}
-      <section className="h-screen relative overflow-hidden bg-background">
-        {/* Background gradient */}
-        <div className="absolute inset-0 bg-gradient-to-b from-background via-background/95 to-background/90" />
-        
-        {/* Spice Collision Animation */}
-        <SpiceCollisionAnimation />
-
-        {/* Subtitle overlay */}
-        <div className="absolute bottom-32 left-1/2 transform -translate-x-1/2 text-center z-40">
-          
-          <p className="text-lg text-muted-foreground max-w-xl mx-auto mb-4 font-exo">
-            Experience authentic Indian flavors with our curated selection of premium spices and traditional ingredients
-          </p>
-          <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground font-exo">
-            <Star className="h-4 w-4 fill-current text-yellow-500" />
-            <span>4.9/5 from 500+ customers in Kazakhstan</span>
-          </div>
-        </div>
-
-        {/* Futuristic scroll hint */}
-        <FuturisticScrollHint onClick={scrollToContent} />
-      </section>
-
-      {/* Content Section */}
-      <div ref={contentRef} className="relative bg-background z-20 min-h-screen">
-        {/* Subtle background pattern */}
-        <div className="absolute inset-0 opacity-5">
-          <div className="absolute inset-0" style={{
-          backgroundImage: `radial-gradient(circle at 20% 50%, hsl(var(--primary)) 0%, transparent 50%), 
-                             radial-gradient(circle at 80% 50%, hsl(var(--primary)) 0%, transparent 50%)`
-        }} />
-        </div>
-
-        <main className="relative container mx-auto px-4 py-20 space-y-16">
-          {/* Featured Products Section */}
-          <div className="animate-on-scroll">
-            <div className="text-center mb-8">
-              <h2 className="text-3xl font-orbitron font-bold text-primary-gradient mb-4">
-                TOP RATED PRODUCTS
-              </h2>
-              <p className="text-muted-foreground max-w-2xl mx-auto font-exo mb-6">
-                Discover our most loved spices and ingredients, highly rated by customers across Kazakhstan
+  if (isAdminMode && adminUser) {
+    return (
+      <>
+        <Navbar 
+          isAdmin={isAdminMode} 
+          onAdminToggle={() => setIsAdminMode(!isAdminMode)} 
+        />
+        <div className="min-h-screen bg-background">
+          <div className="container mx-auto px-4 py-8">
+            <div className="mb-8">
+              <h1 className="text-3xl font-bold font-orbitron text-primary-gradient mb-2">
+                Admin Dashboard
+              </h1>
+              <p className="text-muted-foreground">
+                Welcome back, {adminUser.name}
               </p>
-              <Link to="/marketplace">
-                <Button variant="outline" className="mb-8">
-                  View Full Marketplace →
-                </Button>
-              </Link>
             </div>
 
-            {/* Quick Category Filter */}
-            <div className="flex justify-center mb-12">
-              <CategoryFilter categories={categories} selectedCategory={selectedCategory} onCategoryChange={setSelectedCategory} />
-            </div>
-
-            {/* Products Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
-              {topRatedProducts.map(product => <SpiceCard key={product.id} product={product} isAdmin={isAdmin} onEdit={product => {
-              toast({
-                title: 'Edit Product',
-                description: 'Edit functionality coming soon!',
-                variant: 'default'
-              });
-            }} onDelete={handleDeleteProduct} />)}
-            </div>
-
-            {topRatedProducts.length === 0 && <div className="text-center py-16">
-                <div className="text-6xl mb-4">🔍</div>
-                <h3 className="text-2xl font-bold text-muted-foreground mb-2">
-                  No products found
-                </h3>
-                <p className="text-muted-foreground">
-                  Try adjusting your search or category filter
-                </p>
-              </div>}
+            <Tabs defaultValue="orders" className="space-y-6">
+              <TabsList className="grid w-full grid-cols-2 max-w-md">
+                <TabsTrigger value="orders">Order Management</TabsTrigger>
+                <TabsTrigger value="products">Product Management</TabsTrigger>
+              </TabsList>
+              
+              <TabsContent value="orders">
+                <OrderManagement />
+              </TabsContent>
+              
+              <TabsContent value="products">
+                <div className="space-y-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                    {products.map((product) => (
+                      <div key={product.id} className="relative">
+                        <SpiceCard product={product} />
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => setEditingProduct(product)}
+                          className="absolute top-2 right-2 z-10 bg-background/90 backdrop-blur-sm"
+                        >
+                          Edit
+                        </Button>
+                      </div>
+                    ))}
+                  </div>
+                  <AdminPanel categories={categories} onProductAdded={handleProductUpdated} />
+                </div>
+              </TabsContent>
+            </Tabs>
           </div>
-        </main>
+
+          {editingProduct && (
+            <AdminProductEdit
+              product={editingProduct}
+              categories={categories}
+              isOpen={!!editingProduct}
+              onClose={() => setEditingProduct(null)}
+              onProductUpdated={handleProductUpdated}
+            />
+          )}
+        </div>
+      </>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-background">
+      <Navbar isAdmin={isAdminMode} onAdminToggle={() => setIsAdminMode(!isAdminMode)} />
+      
+      {/* Hero Section */}
+      <div className="relative overflow-hidden">
+        <div className="absolute inset-0 z-0">
+          <SpiceScene3D />
+        </div>
+        
+        <div className="relative z-10 container mx-auto px-4 py-32 text-center">
+          <div className="max-w-4xl mx-auto">
+            <h1 className="text-5xl md:text-7xl font-bold font-orbitron text-primary-gradient mb-6 animate-fade-up">
+              Kazakhstani Spice Marketplace
+            </h1>
+            <p className="text-xl md:text-2xl text-muted-foreground mb-8 animate-fade-up animation-delay-200">
+              Discover authentic flavors from the heart of Central Asia
+            </p>
+            <Button 
+              size="lg" 
+              className="btn-primary animate-fade-up animation-delay-400"
+              onClick={() => document.getElementById('products')?.scrollIntoView({ behavior: 'smooth' })}
+            >
+              Explore Products
+            </Button>
+          </div>
+        </div>
       </div>
 
-      {/* Admin Panel */}
-      {isAdmin && <AdminPanel categories={categories} onProductAdded={handleProductAdded} />}
-    </div>;
+      {/* Products Section */}
+      <div id="products" className="container mx-auto px-4 py-16">
+        <div className="text-center mb-12">
+          <h2 className="text-4xl font-bold font-orbitron text-primary-gradient mb-4">
+            Premium Spices
+          </h2>
+          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+            Hand-selected spices sourced directly from trusted farmers across Kazakhstan
+          </p>
+        </div>
+
+        <div className="mb-8">
+          <CategoryFilter
+            categories={categories}
+            selectedCategory={selectedCategory}
+            onCategoryChange={setSelectedCategory}
+          />
+        </div>
+
+        {loading ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {Array.from({ length: 8 }).map((_, i) => (
+              <div key={i} className="card-modern h-96 animate-pulse bg-muted/50" />
+            ))}
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {filteredProducts.map((product) => (
+              <SpiceCard key={product.id} product={product} />
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
 };
+
 export default Index;
