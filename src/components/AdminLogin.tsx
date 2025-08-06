@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useAdminAuth } from '@/hooks/useAdminAuth';
+import { useSound } from '@/hooks/useSound';
 import { Lock, User } from 'lucide-react';
 
 interface AdminLoginProps {
@@ -17,11 +18,13 @@ export const AdminLogin = ({ isOpen, onClose }: AdminLoginProps) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const { login, loading, createInitialAdmin } = useAdminAuth();
+  const { playSuccessSound } = useSound();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const success = await login(email, password);
     if (success) {
+      playSuccessSound();
       onClose();
       setEmail('');
       setPassword('');

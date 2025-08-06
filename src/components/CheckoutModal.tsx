@@ -8,6 +8,7 @@ import { MessageSquare, Mail, Phone } from 'lucide-react';
 import { useCart } from '@/contexts/CartContext';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { useSound } from '@/hooks/useSound';
 
 interface CheckoutModalProps {
   isOpen: boolean;
@@ -21,6 +22,7 @@ export function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [orderPlaced, setOrderPlaced] = useState(false);
   const { toast } = useToast();
+  const { playSuccessSound } = useSound();
 
   const handleSubmitOrder = async () => {
     if (!customerEmail || !customerWhatsapp) {
@@ -80,6 +82,7 @@ export function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
 
       setOrderPlaced(true);
       clearCart();
+      playSuccessSound();
       
       toast({
         title: 'Order Placed Successfully!',
