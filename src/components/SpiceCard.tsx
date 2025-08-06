@@ -150,25 +150,27 @@ export const SpiceCard = ({ product, isAdmin, onEdit, onDelete }: SpiceCardProps
             </p>
           )}
           
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between gap-2">
             <span className="text-lg font-bold text-primary">
               ₸{product.price.toFixed(2)}
             </span>
-            <div className="flex gap-2">
-              <Button
-                size="sm"
-                variant="outline"
-                onClick={handleAddToCart}
-                className="hover-scale"
-              >
-                Add to Cart
+          </div>
+          
+          <div className="flex flex-col gap-2 mt-3">
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={handleAddToCart}
+              className="w-full"
+            >
+              <ShoppingCart className="h-4 w-4 mr-2" />
+              Add to Cart
+            </Button>
+            <Link to={`/product/${product.id}`} className="w-full">
+              <Button size="sm" className="w-full">
+                View Details
               </Button>
-              <Link to={`/product/${product.id}`}>
-                <Button size="sm" className="hover-scale">
-                  View Details
-                </Button>
-              </Link>
-            </div>
+            </Link>
           </div>
         </div>
       </CardContent>
