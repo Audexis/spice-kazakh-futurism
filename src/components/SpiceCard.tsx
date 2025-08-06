@@ -4,7 +4,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Product } from "@/hooks/useSpiceData";
-import { MoreHorizontal, Edit, Trash2, Star } from "lucide-react";
+import { MoreHorizontal, Edit, Trash2, Star, ShoppingCart } from "lucide-react";
+import { useCart } from "@/contexts/CartContext";
+import { useToast } from "@/hooks/use-toast";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -21,6 +23,18 @@ interface SpiceCardProps {
 
 export const SpiceCard = ({ product, isAdmin, onEdit, onDelete }: SpiceCardProps) => {
   const [isDeleting, setIsDeleting] = useState(false);
+  const { addToCart } = useCart();
+  const { toast } = useToast();
+
+  const handleAddToCart = (e: React.MouseEvent) => {
+    e.preventDefault(); // Prevent navigation to product page
+    addToCart(product);
+    toast({
+      title: 'Added to Cart',
+      description: `${product.name} has been added to your cart.`,
+      variant: 'default'
+    });
+  };
 
   const renderStars = (rating: number) => {
     return Array.from({ length: 5 }, (_, i) => (
@@ -140,11 +154,21 @@ export const SpiceCard = ({ product, isAdmin, onEdit, onDelete }: SpiceCardProps
             <span className="text-lg font-bold text-primary">
               ₸{product.price.toFixed(2)}
             </span>
-            <Link to={`/product/${product.id}`}>
-              <Button size="sm" className="hover-scale">
-                View Details
+            <div className="flex gap-2">
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={handleAddToCart}
+                className="hover-scale"
+              >
+                Add to Cart
               </Button>
-            </Link>
+              <Link to={`/product/${product.id}`}>
+                <Button size="sm" className="hover-scale">
+                  View Details
+                </Button>
+              </Link>
+            </div>
           </div>
         </div>
       </CardContent>

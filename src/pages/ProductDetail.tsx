@@ -8,6 +8,8 @@ import { ArrowLeft, Star, ShoppingCart, Heart, Share2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { Navbar } from '@/components/Navbar';
 import { useToast } from '@/hooks/use-toast';
+import { useCart } from '@/contexts/CartContext';
+import { ReviewForm } from '@/components/ReviewForm';
 
 interface Product {
   id: string;
@@ -39,6 +41,7 @@ export default function ProductDetail() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { toast } = useToast();
+  const { addToCart } = useCart();
 
   useEffect(() => {
     if (id) {
@@ -96,11 +99,24 @@ export default function ProductDetail() {
   };
 
   const handleAddToCart = () => {
-    toast({
-      title: 'Added to Cart',
-      description: `${product?.name} has been added to your cart.`,
-      variant: 'default'
-    });
+    if (product) {
+      // Convert to cart-compatible format
+      const cartProduct = {
+        ...product,
+        category_id: product.category?.slug || 'uncategorized',
+        category: product.category ? {
+          ...product.category,
+          id: product.category.slug,
+          description: undefined
+        } : undefined
+      };
+      addToCart(cartProduct);
+      toast({
+        title: 'Added to Cart',
+        description: `${product.name} has been added to your cart.`,
+        variant: 'default'
+      });
+    }
   };
 
   const handleShare = () => {
@@ -288,7 +304,17 @@ export default function ProductDetail() {
       </div>
 
       {/* Reviews Section */}
-      <div className="container mx-auto px-4 py-12">
+      <div className="container mx-auto px-4 py-12 space-y-8">
+        {/* Review Form */}
+        <ReviewForm 
+          productId={product.id} 
+          onReviewSubmitted={() => {
+            fetchReviews();
+            fetchProduct(); // Refresh to get updated ratings
+          }} 
+        />
+        
+        {/* Reviews List */}
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center justify-between">

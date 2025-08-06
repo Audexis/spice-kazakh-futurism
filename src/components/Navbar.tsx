@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Search, Menu, X } from 'lucide-react';
 import { Input } from '@/components/ui/input';
+import { Cart } from '@/components/Cart';
 
 interface NavbarProps {
   isAdmin?: boolean;
@@ -64,8 +65,9 @@ export const Navbar = ({ isAdmin, onAdminToggle, searchQuery, onSearchChange }: 
             </div>
           )}
 
-          {/* Admin Toggle & Mobile Menu */}
+          {/* Cart & Admin Toggle & Mobile Menu */}
           <div className="flex items-center space-x-4">
+            <Cart />
             {onAdminToggle && (
               <Button
                 variant="outline"
