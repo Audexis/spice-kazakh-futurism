@@ -1,131 +1,68 @@
+import { useState, useEffect } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
+import { useToast } from "@/hooks/use-toast";
+import { useAdminAuth } from "@/hooks/useAdminAuth";
 
-import { useState, useEffect } from 'react';
-import { supabase } from '@/integrations/supabase/client';
-import { useToast } from '@/hooks/use-toast';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Textarea } from '@/components/ui/textarea';
-import { Label } from '@/components/ui/label';
-import { 
-  Table, 
-  TableBody, 
-  TableCell, 
-  TableHead, 
-  TableHeader, 
-  TableRow 
-} from '@/components/ui/table';
-import { useAdminAuth } from '@/hooks/useAdminAuth';
-import { Package, Clock, Truck, CheckCircle, XCircle, AlertCircle } from 'lucide-react';
+type OrderStatus = "pending" | "confirmed" | "preparing" | "in_transit" | "delivered" | "cancelled";
 
 interface Order {
   id: string;
-  customer_email: string;
-  customer_whatsapp: string;
+  user_email: string;
   total_amount: number;
-  status: string;
+  status: OrderStatus;
   admin_notes: string | null;
   created_at: string;
   status_updated_at: string;
-  order_items: Array<{
-    id: string;
+  items: Array<{
+    product_name: string;
     quantity: number;
     price: number;
-    product_id: string;
   }>;
 }
-
-const statusIcons = {
-  pending: <Clock className="h-4 w-4" />,
-  confirmed: <CheckCircle className="h-4 w-4" />,
-  preparing: <Package className="h-4 w-4" />,
-  in_transit: <Truck className="h-4 w-4" />,
-  delivered: <CheckCircle className="h-4 w-4" />,
-  cancelled: <XCircle className="h-4 w-4" />
-};
-
-const statusColors = {
-  pending: 'bg-yellow-500/10 text-yellow-700 border-yellow-500/20',
-  confirmed: 'bg-blue-500/10 text-blue-700 border-blue-500/20',
-  preparing: 'bg-purple-500/10 text-purple-700 border-purple-500/20',
-  in_transit: 'bg-orange-500/10 text-orange-700 border-orange-500/20',
-  delivered: 'bg-green-500/10 text-green-700 border-green-500/20',
-  cancelled: 'bg-red-500/10 text-red-700 border-red-500/20'
-};
 
 export const OrderManagement = () => {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
-  const [newStatus, setNewStatus] = useState('');
-  const [adminNotes, setAdminNotes] = useState('');
-  const [updating, setUpdating] = useState(false);
+  const [updatingOrder, setUpdatingOrder] = useState<string | null>(null);
+  const [editingNotes, setEditingNotes] = useState<string | null>(null);
+  const [noteText, setNoteText] = useState("");
   const { toast } = useToast();
   const { adminUser } = useAdminAuth();
 
   const fetchOrders = async () => {
+    setLoading(true);
     try {
       const { data, error } = await supabase
         .from('orders')
         .select(`
-          *,
-          order_items (
-            id,
-            quantity,
-            price,
-            product_id
-          )
+          id, 
+          user_email, 
+          total_amount, 
+          status, 
+          admin_notes, 
+          created_at, 
+          status_updated_at,
+          items (product_name, quantity, price)
         `)
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      setOrders(data || []);
+
+      setOrders(data as Order[]);
     } catch (error) {
+      console.error('Error fetching orders:', error);
       toast({
-        title: 'Error',
-        description: 'Failed to fetch orders',
-        variant: 'destructive'
+        title: "Error",
+        description: "Failed to fetch orders",
+        variant: "destructive",
       });
     } finally {
       setLoading(false);
-    }
-  };
-
-  const updateOrderStatus = async () => {
-    if (!selectedOrder || !newStatus || !adminUser) return;
-
-    setUpdating(true);
-    try {
-      const { error } = await supabase
-        .from('orders')
-        .update({
-          status: newStatus,
-          admin_notes: adminNotes || null,
-          updated_by_admin: adminUser.id
-        })
-        .eq('id', selectedOrder.id);
-
-      if (error) throw error;
-
-      toast({
-        title: 'Success',
-        description: 'Order status updated successfully',
-      });
-
-      // Refresh orders
-      await fetchOrders();
-      setSelectedOrder(null);
-      setNewStatus('');
-      setAdminNotes('');
-    } catch (error) {
-      toast({
-        title: 'Error',
-        description: 'Failed to update order status',
-        variant: 'destructive'
-      });
-    } finally {
-      setUpdating(false);
     }
   };
 
@@ -133,148 +70,153 @@ export const OrderManagement = () => {
     fetchOrders();
   }, []);
 
-  if (loading) {
-    return <div className="flex justify-center p-8">Loading orders...</div>;
-  }
+  const updateOrderStatus = async (orderId: string, newStatus: string, notes?: string) => {
+    if (!adminUser) return;
+    
+    setUpdatingOrder(orderId);
+    try {
+      const { error } = await supabase
+        .from('orders')
+        .update({
+          status: newStatus as OrderStatus, // Cast string to OrderStatus type
+          admin_notes: notes || null,
+          updated_by_admin: adminUser.id
+        })
+        .eq('id', orderId);
+
+      if (error) throw error;
+
+      await fetchOrders();
+      toast({
+        title: "Order updated",
+        description: `Order status changed to ${newStatus}`,
+      });
+    } catch (error) {
+      console.error('Error updating order:', error);
+      toast({
+        title: "Error",
+        description: "Failed to update order status",
+        variant: "destructive",
+      });
+    } finally {
+      setUpdatingOrder(null);
+    }
+  };
+
+  const saveNotes = async (orderId: string) => {
+    if (!adminUser) return;
+
+    setUpdatingOrder(orderId);
+    try {
+      const { error } = await supabase
+        .from('orders')
+        .update({
+          admin_notes: noteText,
+          updated_by_admin: adminUser.id
+        })
+        .eq('id', orderId);
+
+      if (error) throw error;
+
+      await fetchOrders();
+      toast({
+        title: "Notes saved",
+        description: "Admin notes have been updated",
+      });
+    } catch (error) {
+      console.error('Error saving notes:', error);
+      toast({
+        title: "Error",
+        description: "Failed to save notes",
+        variant: "destructive",
+      });
+    } finally {
+      setUpdatingOrder(null);
+      setEditingNotes(null);
+    }
+  };
 
   return (
-    <div className="space-y-6">
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2 font-orbitron">
-            <Package className="h-5 w-5" />
-            Order Management Dashboard
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="rounded-md border">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Order ID</TableHead>
-                  <TableHead>Customer</TableHead>
-                  <TableHead>Amount</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Date</TableHead>
-                  <TableHead>Actions</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {orders.map((order) => (
-                  <TableRow key={order.id}>
-                    <TableCell className="font-mono text-sm">
-                      {order.id.slice(0, 8)}...
-                    </TableCell>
-                    <TableCell>
-                      <div>
-                        <div className="font-medium">{order.customer_email}</div>
-                        <div className="text-sm text-muted-foreground">
-                          {order.customer_whatsapp}
-                        </div>
+    <div className="space-y-4">
+      <h2 className="text-2xl font-bold">Order Management</h2>
+      {loading ? (
+        <p>Loading orders...</p>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {orders.map((order) => (
+            <Card key={order.id}>
+              <CardHeader>
+                <CardTitle>Order ID: {order.id}</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-2">
+                <p>User Email: {order.user_email}</p>
+                <p>Total Amount: ${order.total_amount}</p>
+                <Badge variant="secondary">{order.status}</Badge>
+                <p>Created At: {new Date(order.created_at).toLocaleString()}</p>
+                <p>Status Updated At: {new Date(order.status_updated_at).toLocaleString()}</p>
+                <div>
+                  <h3 className="text-sm font-semibold">Items:</h3>
+                  <ul>
+                    {order.items.map((item, index) => (
+                      <li key={index} className="text-xs">
+                        {item.quantity} x {item.product_name} - ${item.price}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                <Select
+                  disabled={updatingOrder === order.id}
+                  onValueChange={(value) => updateOrderStatus(order.id, value)}
+                >
+                  <SelectTrigger className="w-[100%]">
+                    <SelectValue placeholder={order.status} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="pending">Pending</SelectItem>
+                    <SelectItem value="confirmed">Confirmed</SelectItem>
+                    <SelectItem value="preparing">Preparing</SelectItem>
+                    <SelectItem value="in_transit">In Transit</SelectItem>
+                    <SelectItem value="delivered">Delivered</SelectItem>
+                    <SelectItem value="cancelled">Cancelled</SelectItem>
+                  </SelectContent>
+                </Select>
+                <div>
+                  <h3 className="text-sm font-semibold">Admin Notes:</h3>
+                  {editingNotes === order.id ? (
+                    <div className="space-y-2">
+                      <Textarea
+                        defaultValue={order.admin_notes || ""}
+                        onChange={(e) => setNoteText(e.target.value)}
+                      />
+                      <div className="flex justify-end space-x-2">
+                        <Button variant="ghost" size="sm" onClick={() => setEditingNotes(null)}>
+                          Cancel
+                        </Button>
+                        <Button
+                          size="sm"
+                          onClick={() => saveNotes(order.id)}
+                          disabled={updatingOrder === order.id}
+                        >
+                          Save
+                        </Button>
                       </div>
-                    </TableCell>
-                    <TableCell className="font-medium">
-                      ₸{order.total_amount.toFixed(2)}
-                    </TableCell>
-                    <TableCell>
-                      <Badge className={`${statusColors[order.status as keyof typeof statusColors]} flex items-center gap-1 w-fit`}>
-                        {statusIcons[order.status as keyof typeof statusIcons]}
-                        {order.status.replace('_', ' ').toUpperCase()}
-                      </Badge>
-                    </TableCell>
-                    <TableCell>
-                      {new Date(order.created_at).toLocaleDateString()}
-                    </TableCell>
-                    <TableCell>
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() => {
-                          setSelectedOrder(order);
-                          setNewStatus(order.status);
-                          setAdminNotes(order.admin_notes || '');
-                        }}
-                      >
-                        Update
+                    </div>
+                  ) : (
+                    <div className="space-y-2">
+                      <p className="text-sm">{order.admin_notes || "No notes"}</p>
+                      <Button variant="outline" size="sm" onClick={() => {
+                        setEditingNotes(order.id);
+                        setNoteText(order.admin_notes || "");
+                      }}>
+                        Edit Notes
                       </Button>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </div>
-
-          {orders.length === 0 && (
-            <div className="text-center py-8 text-muted-foreground">
-              <AlertCircle className="h-12 w-12 mx-auto mb-4 opacity-50" />
-              <p>No orders found</p>
-            </div>
-          )}
-        </CardContent>
-      </Card>
-
-      {selectedOrder && (
-        <Card>
-          <CardHeader>
-            <CardTitle className="font-orbitron">Update Order Status</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <Label>Customer Email</Label>
-                <p className="text-sm text-muted-foreground">{selectedOrder.customer_email}</p>
-              </div>
-              <div>
-                <Label>WhatsApp</Label>
-                <p className="text-sm text-muted-foreground">{selectedOrder.customer_whatsapp}</p>
-              </div>
-            </div>
-
-            <div>
-              <Label htmlFor="status">Order Status</Label>
-              <Select value={newStatus} onValueChange={setNewStatus}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select status" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="pending">Pending</SelectItem>
-                  <SelectItem value="confirmed">Confirmed</SelectItem>
-                  <SelectItem value="preparing">Preparing</SelectItem>
-                  <SelectItem value="in_transit">In Transit</SelectItem>
-                  <SelectItem value="delivered">Delivered</SelectItem>
-                  <SelectItem value="cancelled">Cancelled</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div>
-              <Label htmlFor="admin-notes">Admin Notes</Label>
-              <Textarea
-                id="admin-notes"
-                value={adminNotes}
-                onChange={(e) => setAdminNotes(e.target.value)}
-                placeholder="Add any notes about this order..."
-                rows={3}
-              />
-            </div>
-
-            <div className="flex gap-2">
-              <Button
-                onClick={updateOrderStatus}
-                disabled={updating}
-                className="btn-primary"
-              >
-                {updating ? 'Updating...' : 'Update Order'}
-              </Button>
-              <Button
-                variant="outline"
-                onClick={() => setSelectedOrder(null)}
-              >
-                Cancel
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
+                    </div>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
       )}
     </div>
   );

@@ -1,7 +1,7 @@
 
 import { useState } from "react";
 import { Navbar } from "@/components/Navbar";
-import { SpiceScene3D } from "@/components/SpiceScene3D";
+import SpiceScene3D from "@/components/SpiceScene3D";
 import { CategoryFilter } from "@/components/CategoryFilter";
 import { SpiceCard } from "@/components/SpiceCard";
 import { AdminPanel } from "@/components/AdminPanel";
