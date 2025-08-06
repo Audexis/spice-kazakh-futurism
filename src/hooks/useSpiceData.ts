@@ -133,13 +133,16 @@ export const useSpiceData = () => {
 
   useEffect(() => {
     const loadData = async () => {
+      console.log('Starting data load...');
       setLoading(true);
       try {
+        console.log('Fetching categories and products...');
         await Promise.all([fetchCategories(), fetchProducts()]);
+        console.log('Data fetch completed successfully');
       } catch (err) {
-        // Error handling is already done in individual functions
         console.error('Error loading data:', err);
       } finally {
+        console.log('Setting loading to false');
         setLoading(false);
       }
     };
