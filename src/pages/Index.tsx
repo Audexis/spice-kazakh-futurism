@@ -153,7 +153,7 @@ const Index = () => {
             </div>
 
             {/* Quick Category Filter */}
-            <div className="flex justify-center">
+            <div className="flex justify-center mb-12">
               <CategoryFilter categories={categories} selectedCategory={selectedCategory} onCategoryChange={setSelectedCategory} />
             </div>
 

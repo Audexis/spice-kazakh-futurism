@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { SpiceCard } from '@/components/SpiceCard';
+import { CategoryFilter } from '@/components/CategoryFilter';
 import { AdminPanel } from '@/components/AdminPanel';
 import { Navbar } from '@/components/Navbar';
 import { useSpiceData } from '@/hooks/useSpiceData';
@@ -121,27 +122,15 @@ export default function Marketplace() {
           />
         </div>
 
-        {/* Horizontal Category Filter */}
+        {/* Category Filter */}
         <div className="space-y-4">
           <h2 className="text-lg font-semibold text-center">Browse Categories</h2>
-          <div className="flex flex-wrap justify-center gap-3">
-            <Button
-              variant={selectedCategory === null ? "default" : "outline"}
-              onClick={() => setSelectedCategory(null)}
-              className="rounded-full"
-            >
-              All Products
-            </Button>
-            {categories.map((category) => (
-              <Button
-                key={category.id}
-                variant={selectedCategory === category.id ? "default" : "outline"}
-                onClick={() => setSelectedCategory(category.id)}
-                className="rounded-full"
-              >
-                {category.name}
-              </Button>
-            ))}
+          <div className="flex justify-center">
+            <CategoryFilter 
+              categories={categories} 
+              selectedCategory={selectedCategory} 
+              onCategoryChange={setSelectedCategory} 
+            />
           </div>
         </div>
 

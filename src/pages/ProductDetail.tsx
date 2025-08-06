@@ -286,17 +286,19 @@ export default function ProductDetail() {
               </div>
 
               {/* Action Buttons */}
-              <div className="flex space-x-4">
-                <Button onClick={handleAddToCart} className="flex-1">
+              <div className="flex flex-wrap gap-4">
+                <Button onClick={handleAddToCart} className="flex-1 min-w-0">
                   <ShoppingCart className="h-4 w-4 mr-2" />
                   Add to Cart
                 </Button>
-                <Button variant="outline" size="icon">
-                  <Heart className="h-4 w-4" />
-                </Button>
-                <Button variant="outline" size="icon" onClick={handleShare}>
-                  <Share2 className="h-4 w-4" />
-                </Button>
+                <div className="flex gap-2">
+                  <Button variant="outline" size="icon" className="shrink-0">
+                    <Heart className="h-4 w-4" />
+                  </Button>
+                  <Button variant="outline" size="icon" onClick={handleShare} className="shrink-0">
+                    <Share2 className="h-4 w-4" />
+                  </Button>
+                </div>
               </div>
             </div>
           </div>
