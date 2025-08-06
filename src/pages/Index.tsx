@@ -105,9 +105,9 @@ const Index = () => {
   }
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-background">
       {/* Immersive 3D Hero Section */}
-      <section className="h-screen relative overflow-hidden">
+      <section className="h-screen relative overflow-hidden bg-background">
         {/* Background gradient */}
         <div className="absolute inset-0 bg-gradient-to-b from-background via-background/95 to-background/90" />
         
@@ -149,7 +149,7 @@ const Index = () => {
       </section>
 
       {/* Content Section */}
-      <div ref={contentRef} className="relative bg-background z-20">
+      <div ref={contentRef} className="relative bg-background z-20 min-h-screen">
         {/* Subtle background pattern */}
         <div className="absolute inset-0 opacity-5">
           <div className="absolute inset-0" style={{
