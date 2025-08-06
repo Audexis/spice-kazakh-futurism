@@ -108,13 +108,13 @@ export const SpiceCard = ({ product, isAdmin, onEdit, onDelete }: SpiceCardProps
             )}
 
             {/* Rating */}
-            {product.rating && product.review_count && (
+            {product.rating && (
               <div className="flex items-center space-x-1">
                 <div className="flex items-center">
                   {renderStars(product.rating)}
                 </div>
                 <span className="text-xs text-muted-foreground">
-                  {product.rating.toFixed(1)} ({product.review_count})
+                  {product.rating.toFixed(1)} ({product.review_count || 0} reviews)
                 </span>
               </div>
             )}
@@ -138,7 +138,7 @@ export const SpiceCard = ({ product, isAdmin, onEdit, onDelete }: SpiceCardProps
           
           <div className="flex items-center justify-between">
             <span className="text-lg font-bold text-primary">
-              ${product.price.toFixed(2)}
+              ₸{product.price.toFixed(2)}
             </span>
             <Link to={`/product/${product.id}`}>
               <Button size="sm" className="hover-scale">

@@ -198,21 +198,75 @@ export default function ProductDetail() {
                   {renderStars(product.rating || 0)}
                 </div>
                 <span className="text-sm text-muted-foreground">
-                  {product.rating?.toFixed(1)} ({product.review_count} reviews)
+                  {product.rating?.toFixed(1)} ({product.review_count || 0} reviews)
                 </span>
               </div>
 
               {/* Price */}
               <div className="text-3xl font-bold text-primary">
-                ${product.price.toFixed(2)}
+                ₸{product.price.toFixed(2)}
+              </div>
+
+              {/* Product Details Grid */}
+              <div className="grid grid-cols-2 gap-4 bg-muted/50 p-4 rounded-lg">
+                <div>
+                  <h4 className="font-semibold text-sm text-muted-foreground">SKU</h4>
+                  <p className="text-sm">{product.id.slice(0, 8).toUpperCase()}</p>
+                </div>
+                <div>
+                  <h4 className="font-semibold text-sm text-muted-foreground">Category</h4>
+                  <p className="text-sm">{product.category?.name || 'Uncategorized'}</p>
+                </div>
+                <div>
+                  <h4 className="font-semibold text-sm text-muted-foreground">Manufacturer</h4>
+                  <p className="text-sm">{product.manufacturer || 'N/A'}</p>
+                </div>
+                <div>
+                  <h4 className="font-semibold text-sm text-muted-foreground">Availability</h4>
+                  <p className="text-sm text-green-600">In Stock</p>
+                </div>
               </div>
 
               {/* Description */}
               <div>
-                <h3 className="text-lg font-semibold mb-2">Description</h3>
+                <h3 className="text-lg font-semibold mb-2">Product Description</h3>
                 <p className="text-muted-foreground leading-relaxed">
-                  {product.description || 'No description available.'}
+                  {product.description || 'Experience the authentic flavors of traditional Kazakhstani cuisine with this premium product. Carefully sourced and selected for quality, this item brings the essence of Central Asian culinary heritage to your kitchen.'}
                 </p>
+              </div>
+
+              {/* Features */}
+              <div>
+                <h3 className="text-lg font-semibold mb-3">Key Features</h3>
+                <ul className="space-y-2 text-sm text-muted-foreground">
+                  <li className="flex items-center">
+                    <span className="w-2 h-2 bg-primary rounded-full mr-3"></span>
+                    Premium quality ingredients
+                  </li>
+                  <li className="flex items-center">
+                    <span className="w-2 h-2 bg-primary rounded-full mr-3"></span>
+                    Traditional Kazakhstani sourcing
+                  </li>
+                  <li className="flex items-center">
+                    <span className="w-2 h-2 bg-primary rounded-full mr-3"></span>
+                    Carefully processed and packaged
+                  </li>
+                  <li className="flex items-center">
+                    <span className="w-2 h-2 bg-primary rounded-full mr-3"></span>
+                    Authentic flavor profile
+                  </li>
+                </ul>
+              </div>
+
+              {/* Shipping Info */}
+              <div className="bg-primary/10 p-4 rounded-lg">
+                <h4 className="font-semibold mb-2">Shipping Information</h4>
+                <div className="space-y-1 text-sm text-muted-foreground">
+                  <p>• Free shipping on orders over ₸5,000</p>
+                  <p>• Express delivery available (1-2 business days)</p>
+                  <p>• Standard delivery: 3-5 business days</p>
+                  <p>• International shipping available</p>
+                </div>
               </div>
 
               {/* Action Buttons */}
