@@ -160,7 +160,7 @@ const Index = () => {
 
         <main className="relative container mx-auto px-4 py-20 space-y-16">
           {/* Search Section */}
-          <div className="animate-on-scroll opacity-0">
+          <div className="animate-on-scroll">
             <div className="text-center mb-8">
               <h2 className="text-3xl font-orbitron font-bold text-primary-gradient mb-4">
                 BROWSE COLLECTION
@@ -184,7 +184,7 @@ const Index = () => {
           </div>
 
           {/* Category Filter */}
-          <div className="animate-on-scroll opacity-0">
+          <div className="animate-on-scroll">
             <CategoryFilter 
               categories={categories}
               selectedCategory={selectedCategory}
@@ -193,7 +193,7 @@ const Index = () => {
           </div>
 
           {/* Products Grid */}
-          <div className="animate-on-scroll opacity-0">
+          <div className="animate-on-scroll">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
               {filteredProducts.map((product) => (
                 <SpiceCard
