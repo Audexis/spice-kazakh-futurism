@@ -116,7 +116,7 @@ const Index = () => {
               Discover authentic flavors from the heart of India
             </p>
             <p className="text-lg text-white/80 mb-8 drop-shadow-lg">
-              Premium Indian grocery • Traditional spice bazaar • Authentic ingredients
+              Premium Indian grocery • Online spice bazaar • Hassle free and authentic ingredients
             </p>
             <Button 
               size="lg" 
