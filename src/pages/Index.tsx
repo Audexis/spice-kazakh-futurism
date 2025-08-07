@@ -1,7 +1,7 @@
 
 import { useState } from "react";
 import { Navbar } from "@/components/Navbar";
-import { PhysicsSpiceScene } from "@/components/PhysicsSpiceScene";
+import indianSpicesBackground from "@/assets/indian-spices-background.jpg";
 import { CategoryFilter } from "@/components/CategoryFilter";
 import { SpiceCard } from "@/components/SpiceCard";
 import { AdminPanel } from "@/components/AdminPanel";
@@ -99,25 +99,31 @@ const Index = () => {
       <Navbar isAdmin={isAdminMode} onAdminToggle={() => setIsAdminMode(!isAdminMode)} />
       
       {/* Hero Section */}
-      <div className="relative overflow-hidden">
-        <div className="absolute inset-0 z-0">
-          <PhysicsSpiceScene />
+      <div className="relative overflow-hidden min-h-screen">
+        <div 
+          className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat"
+          style={{ backgroundImage: `url(${indianSpicesBackground})` }}
+        >
+          <div className="absolute inset-0 bg-black/40"></div>
         </div>
         
-        <div className="relative z-10 container mx-auto px-4 py-32 text-center">
+        <div className="relative z-10 container mx-auto px-4 py-32 text-center flex items-center justify-center min-h-screen">
           <div className="max-w-4xl mx-auto">
-            <h1 className="text-5xl md:text-7xl font-bold font-orbitron text-primary-gradient mb-6 animate-fade-up">
-              Kazakhstani Spice Marketplace
+            <h1 className="text-5xl md:text-7xl font-bold font-serif text-white mb-6 drop-shadow-2xl">
+              Indian Spices in Almaty
             </h1>
-            <p className="text-xl md:text-2xl text-muted-foreground mb-8 animate-fade-up animation-delay-200">
-              Discover authentic flavors from the heart of Central Asia
+            <p className="text-xl md:text-2xl text-white/90 mb-8 drop-shadow-lg">
+              Discover authentic flavors from the heart of India
+            </p>
+            <p className="text-lg text-white/80 mb-8 drop-shadow-lg">
+              Premium Indian grocery • Traditional spice bazaar • Authentic ingredients
             </p>
             <Button 
               size="lg" 
-              className="btn-primary animate-fade-up animation-delay-400"
+              className="bg-red-600 hover:bg-red-700 text-white font-semibold px-8 py-4 text-lg shadow-xl"
               onClick={() => document.getElementById('products')?.scrollIntoView({ behavior: 'smooth' })}
             >
-              Explore Products
+              Shop Now
             </Button>
           </div>
         </div>
@@ -126,11 +132,11 @@ const Index = () => {
       {/* Products Section */}
       <div id="products" className="container mx-auto px-4 py-16">
         <div className="text-center mb-12">
-          <h2 className="text-4xl font-bold font-orbitron text-primary-gradient mb-4">
-            Premium Spices
+          <h2 className="text-4xl font-bold font-serif text-red-700 mb-4">
+            Premium Indian Spices
           </h2>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Hand-selected spices sourced directly from trusted farmers across Kazakhstan
+          <p className="text-xl text-gray-700 max-w-2xl mx-auto">
+            Hand-selected authentic spices sourced directly from India for your Indian shop in Almaty
           </p>
         </div>
 
