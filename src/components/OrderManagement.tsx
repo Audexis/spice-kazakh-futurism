@@ -173,7 +173,7 @@ export const OrderManagement = () => {
   if (loading) {
     return (
       <div className="space-y-4">
-        <h2 className="text-2xl font-bold font-serif text-red-700">Order Management</h2>
+        <h2 className="text-2xl font-bold font-orbitron text-red-700">Order Management</h2>
         <div className="grid gap-4">
           {Array.from({ length: 3 }).map((_, i) => (
             <div key={i} className="animate-pulse bg-gray-200 h-32 rounded-lg" />
@@ -186,7 +186,7 @@ export const OrderManagement = () => {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h2 className="text-3xl font-bold font-serif text-red-700">Order Management</h2>
+        <h2 className="text-3xl font-bold font-orbitron text-red-700">Order Management</h2>
         <Badge variant="secondary" className="text-sm px-3 py-1">
           {orders.length} Total Orders
         </Badge>
