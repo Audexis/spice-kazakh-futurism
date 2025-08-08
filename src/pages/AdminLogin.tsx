@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
+import { useTranslation } from '@/hooks/useTranslation';
 import { useAdminAuth } from '@/hooks/useAdminAuth';
 import { Shield, ArrowLeft } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -14,6 +15,7 @@ const AdminLogin = () => {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const { adminUser, login } = useAdminAuth();
+  const { t } = useTranslation();
   const { toast } = useToast();
 
   // Redirect if already logged in
@@ -68,7 +70,7 @@ const AdminLogin = () => {
               <Shield className="h-6 w-6 text-white" />
             </div>
             <CardTitle className="text-2xl font-orbitron text-red-700">
-              Admin Login
+              {t('adminLogin')}
             </CardTitle>
             <p className="text-gray-600 mt-2">
               Sign in to access the admin dashboard
@@ -78,7 +80,7 @@ const AdminLogin = () => {
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <Label htmlFor="email">Email Address</Label>
+                <Label htmlFor="email">{t('email')}</Label>
                 <Input
                   id="email"
                   type="email"
@@ -91,9 +93,9 @@ const AdminLogin = () => {
               </div>
 
               <div>
-                <Label htmlFor="password">Password</Label>
-                <Input
-                  id="password"
+              <Label htmlFor="password">{t('password')}</Label>
+              <Input
+                id="password"
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
@@ -108,7 +110,7 @@ const AdminLogin = () => {
                 className="w-full bg-red-600 hover:bg-red-700 font-medium"
                 disabled={loading}
               >
-                {loading ? 'Signing in...' : 'Sign In'}
+                {loading ? t('loading') : t('login')}
               </Button>
             </form>
           </CardContent>

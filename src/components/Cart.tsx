@@ -5,10 +5,12 @@ import { Badge } from '@/components/ui/badge';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { Separator } from '@/components/ui/separator';
 import { useCart } from '@/contexts/CartContext';
+import { useTranslation } from '@/hooks/useTranslation';
 import { CheckoutModal } from '@/components/CheckoutModal';
 
 export function Cart() {
   const { items, updateQuantity, removeFromCart, getCartTotal, getCartItemCount } = useCart();
+  const { t } = useTranslation();
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
 
@@ -38,7 +40,7 @@ export function Cart() {
           <SheetHeader>
             <SheetTitle className="flex items-center gap-2">
               <ShoppingCart className="h-5 w-5" />
-              Your Cart ({getCartItemCount()} items)
+              {t('cart')} ({getCartItemCount()} items)
             </SheetTitle>
           </SheetHeader>
 
@@ -46,7 +48,7 @@ export function Cart() {
             {items.length === 0 ? (
               <div className="text-center py-8">
                 <ShoppingCart className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-                <p className="text-muted-foreground">Your cart is empty</p>
+                <p className="text-muted-foreground">{t('emptyCart')}</p>
               </div>
             ) : (
               <>
@@ -112,7 +114,7 @@ export function Cart() {
 
                 <div className="space-y-4">
                   <div className="flex justify-between items-center text-lg font-semibold">
-                    <span>Total:</span>
+                    <span>{t('total')}:</span>
                     <span>₸{getCartTotal().toFixed(2)}</span>
                   </div>
 
@@ -121,7 +123,7 @@ export function Cart() {
                     className="w-full"
                     size="lg"
                   >
-                    Proceed to Checkout
+                    {t('checkout')}
                   </Button>
                 </div>
               </>

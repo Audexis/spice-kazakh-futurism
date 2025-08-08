@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
+import { useTranslation } from "@/hooks/useTranslation";
 import { useAdminAuth } from "@/hooks/useAdminAuth";
 import { Calendar, DollarSign, Mail, Package, Clock, FileText, Eye, EyeOff } from "lucide-react";
 
@@ -56,6 +57,7 @@ export const OrderManagement = () => {
   const [noteText, setNoteText] = useState("");
   const [expandedOrders, setExpandedOrders] = useState<Set<string>>(new Set());
   const { toast } = useToast();
+  const { t } = useTranslation();
   const { adminUser } = useAdminAuth();
 
   const toggleOrderExpanded = (orderId: string) => {
@@ -186,7 +188,7 @@ export const OrderManagement = () => {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h2 className="text-3xl font-bold font-orbitron text-red-700">Order Management</h2>
+        <h2 className="text-3xl font-bold font-orbitron text-red-700">{t('orderManagement')}</h2>
         <Badge variant="secondary" className="text-sm px-3 py-1">
           {orders.length} Total Orders
         </Badge>

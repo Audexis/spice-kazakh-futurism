@@ -8,6 +8,7 @@ import { OrderManagement } from "@/components/OrderManagement";
 import { AdminProductEdit } from "@/components/AdminProductEdit";
 import { useSpiceData } from "@/hooks/useSpiceData";
 import { useAdminAuth } from "@/hooks/useAdminAuth";
+import { useTranslation } from "@/hooks/useTranslation";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Search, Filter } from "lucide-react";
@@ -16,6 +17,7 @@ import { Product } from "@/hooks/useSpiceData";
 const Marketplace = () => {
   const { categories, products, loading } = useSpiceData();
   const { adminUser } = useAdminAuth();
+  const { t } = useTranslation();
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [isAdminMode, setIsAdminMode] = useState(false);
@@ -58,7 +60,7 @@ const Marketplace = () => {
 
             <Tabs defaultValue="orders" className="space-y-6">
               <TabsList className="grid w-full grid-cols-2 max-w-md">
-                <TabsTrigger value="orders">Order Management</TabsTrigger>
+                <TabsTrigger value="orders">{t('orderManagement')}</TabsTrigger>
                 <TabsTrigger value="products">Product Management</TabsTrigger>
               </TabsList>
               
@@ -78,7 +80,7 @@ const Marketplace = () => {
                           onClick={() => setEditingProduct(product)}
                           className="absolute top-2 right-2 z-10 bg-background/90 backdrop-blur-sm"
                         >
-                          Edit
+                          {t('edit')}
                         </Button>
                       </div>
                     ))}
@@ -117,7 +119,7 @@ const Marketplace = () => {
         <div className="container mx-auto px-4 py-16">
           <div className="text-center">
             <h1 className="text-4xl md:text-6xl font-bold font-orbitron text-primary-gradient mb-6">
-              Spice Marketplace
+              {t('marketplace')}
             </h1>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
               Browse our complete collection of premium Kazakhstani spices and seasonings
@@ -179,7 +181,7 @@ const Marketplace = () => {
                     onClick={() => setEditingProduct(product)}
                     className="absolute top-2 right-2 z-10 bg-background/90 backdrop-blur-sm"
                   >
-                    Edit
+                    {t('edit')}
                   </Button>
                 )}
               </div>
@@ -188,7 +190,7 @@ const Marketplace = () => {
         ) : (
           <div className="text-center py-16">
             <Search className="h-16 w-16 mx-auto text-muted-foreground/50 mb-4" />
-            <h3 className="text-2xl font-semibold mb-2">No products found</h3>
+            <h3 className="text-2xl font-semibold mb-2">{t('noProductsFound')}</h3>
             <p className="text-muted-foreground mb-6">
               Try adjusting your search or filter criteria
             </p>

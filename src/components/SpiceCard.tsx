@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Product } from "@/hooks/useSpiceData";
 import { MoreHorizontal, Edit, Trash2, Star, ShoppingCart } from "lucide-react";
 import { useCart } from "@/contexts/CartContext";
+import { useTranslation } from "@/hooks/useTranslation";
 import { useToast } from "@/hooks/use-toast";
 import {
   DropdownMenu,
@@ -24,13 +25,14 @@ interface SpiceCardProps {
 export const SpiceCard = ({ product, isAdmin, onEdit, onDelete }: SpiceCardProps) => {
   const [isDeleting, setIsDeleting] = useState(false);
   const { addToCart } = useCart();
+  const { t } = useTranslation();
   const { toast } = useToast();
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault(); // Prevent navigation to product page
     addToCart(product);
     toast({
-      title: 'Added to Cart',
+      title: t('success'),
       description: `${product.name} has been added to your cart.`,
       variant: 'default'
     });
@@ -97,7 +99,7 @@ export const SpiceCard = ({ product, isAdmin, onEdit, onDelete }: SpiceCardProps
                       }}
                     >
                       <Edit className="mr-2 h-4 w-4" />
-                      Edit
+                      {t('edit')}
                     </DropdownMenuItem>
                     <DropdownMenuItem
                       onClick={(e) => {
@@ -108,7 +110,7 @@ export const SpiceCard = ({ product, isAdmin, onEdit, onDelete }: SpiceCardProps
                       disabled={isDeleting}
                     >
                       <Trash2 className="mr-2 h-4 w-4" />
-                      {isDeleting ? 'Deleting...' : 'Delete'}
+                      {isDeleting ? t('loading') : t('delete')}
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
@@ -164,11 +166,11 @@ export const SpiceCard = ({ product, isAdmin, onEdit, onDelete }: SpiceCardProps
               className="w-full"
             >
               <ShoppingCart className="h-4 w-4 mr-2" />
-              Add to Cart
+              {t('addToCart')}
             </Button>
             <Link to={`/product/${product.id}`} className="w-full">
               <Button size="sm" className="w-full">
-                View Details
+                {t('viewDetails')}
               </Button>
             </Link>
           </div>
