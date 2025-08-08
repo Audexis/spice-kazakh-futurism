@@ -40,7 +40,7 @@ export function Cart() {
           <SheetHeader>
             <SheetTitle className="flex items-center gap-2">
               <ShoppingCart className="h-5 w-5" />
-              {t('cart')} ({getCartItemCount()} items)
+              {t('cart')} ({getCartItemCount()} {t('items')})
             </SheetTitle>
           </SheetHeader>
 
@@ -69,7 +69,7 @@ export function Cart() {
                       
                       <div className="flex-1 min-w-0">
                         <h4 className="font-medium text-sm truncate">{item.product.name}</h4>
-                        <p className="text-sm text-muted-foreground">₸{item.product.price.toFixed(2)} each</p>
+                        <p className="text-sm text-muted-foreground">₸{item.product.price.toFixed(2)} {t('each')}</p>
                         
                         <div className="flex items-center justify-between mt-2">
                           <div className="flex items-center space-x-2">

@@ -51,17 +51,17 @@ const Marketplace = () => {
           <div className="container mx-auto px-4 py-8">
             <div className="mb-8">
               <h1 className="text-3xl font-bold font-orbitron text-primary-gradient mb-2">
-                Admin Dashboard
+                {t('adminDashboard')}
               </h1>
               <p className="text-muted-foreground">
-                Welcome back, {adminUser.name}
+                {t('welcomeBack')} {adminUser.name}
               </p>
             </div>
 
             <Tabs defaultValue="orders" className="space-y-6">
               <TabsList className="grid w-full grid-cols-2 max-w-md">
                 <TabsTrigger value="orders">{t('orderManagement')}</TabsTrigger>
-                <TabsTrigger value="products">Product Management</TabsTrigger>
+                <TabsTrigger value="products">{t('productManagement')}</TabsTrigger>
               </TabsList>
               
               <TabsContent value="orders">
@@ -144,7 +144,7 @@ const Marketplace = () => {
           <div className="flex items-center gap-2 text-muted-foreground">
             <Filter className="h-4 w-4" />
             <span>
-              {filteredProducts.length} product{filteredProducts.length !== 1 ? 's' : ''} found
+              {filteredProducts.length} {t('productsFound')}
             </span>
           </div>
           
@@ -157,7 +157,7 @@ const Marketplace = () => {
                 setSearchQuery("");
               }}
             >
-              Clear Filters
+              {t('clearFilters')}
             </Button>
           )}
         </div>
@@ -201,7 +201,7 @@ const Marketplace = () => {
                 setSearchQuery("");
               }}
             >
-              View All Products
+              {t('viewAllProducts')}
             </Button>
           </div>
         )}

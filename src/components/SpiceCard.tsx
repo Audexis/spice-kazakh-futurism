@@ -119,7 +119,7 @@ export const SpiceCard = ({ product, isAdmin, onEdit, onDelete }: SpiceCardProps
 
             {product.category && (
               <Badge variant="secondary" className="text-xs">
-                {product.category.name}
+                {t(product.category.name) || product.category.name}
               </Badge>
             )}
 
@@ -130,7 +130,7 @@ export const SpiceCard = ({ product, isAdmin, onEdit, onDelete }: SpiceCardProps
                   {renderStars(product.rating)}
                 </div>
                 <span className="text-xs text-muted-foreground">
-                  {product.rating.toFixed(1)} ({product.review_count || 0} reviews)
+                  {product.rating.toFixed(1)} ({product.review_count || 0} {t('reviews')})
                 </span>
               </div>
             )}
@@ -146,9 +146,9 @@ export const SpiceCard = ({ product, isAdmin, onEdit, onDelete }: SpiceCardProps
             </p>
           )}
           
-          {product.manufacturer && (
-            <p className="text-xs text-muted-foreground">
-              by {product.manufacturer}
+            {product.manufacturer && (
+              <p className="text-xs text-muted-foreground">
+                {t('by')} {product.manufacturer}
             </p>
           )}
           

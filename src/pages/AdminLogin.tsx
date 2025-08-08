@@ -61,7 +61,7 @@ const AdminLogin = () => {
           className="inline-flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900 mb-6 transition-colors"
         >
           <ArrowLeft className="h-4 w-4" />
-          Back to Store
+          {t('backToStore')}
         </Link>
 
         <Card className="border-0 shadow-xl">
@@ -73,14 +73,14 @@ const AdminLogin = () => {
               {t('adminLogin')}
             </CardTitle>
             <p className="text-gray-600 mt-2">
-              Sign in to access the admin dashboard
+              {t('signInToAccess')}
             </p>
           </CardHeader>
           
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <Label htmlFor="email">{t('email')}</Label>
+                <Label htmlFor="email">{t('emailAddress')}</Label>
                 <Input
                   id="email"
                   type="email"
@@ -99,7 +99,7 @@ const AdminLogin = () => {
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Enter your password"
+                  placeholder={t('password')}
                   className="mt-1"
                   required
                 />
@@ -110,14 +110,14 @@ const AdminLogin = () => {
                 className="w-full bg-red-600 hover:bg-red-700 font-medium"
                 disabled={loading}
               >
-                {loading ? t('loading') : t('login')}
+                {loading ? t('signingIn') : t('login')}
               </Button>
             </form>
           </CardContent>
         </Card>
 
         <p className="text-center text-xs text-gray-500 mt-6">
-          This is a secure admin area. Only authorized personnel have access.
+          {t('secureAdminArea')}
         </p>
       </div>
     </div>
