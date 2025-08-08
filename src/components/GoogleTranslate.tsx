@@ -139,11 +139,20 @@ export const GoogleTranslate = () => {
 
   return (
     <div className="flex items-center gap-2">
-      {/* Google Translate element - positioned off-screen but functional */}
+      {/* Google Translate element - visually hidden but accessible */}
       <div 
         id="google_translate_element" 
-        className="absolute -left-[9999px] opacity-0 pointer-events-none"
-        style={{ position: 'absolute', left: '-9999px', opacity: 0 }}
+        style={{ 
+          position: 'absolute',
+          top: '-1px',
+          left: '-1px', 
+          width: '1px',
+          height: '1px',
+          overflow: 'hidden',
+          clip: 'rect(0, 0, 0, 0)',
+          whiteSpace: 'nowrap',
+          border: '0'
+        }}
       />
       
       {/* Custom flag-based switcher */}

@@ -140,22 +140,27 @@ All colors MUST be HSL.
     @apply bg-muted/30;
 }
 
-/* Google Translate Widget - Hide but keep functional */
+/* Google Translate Widget - Visually hidden but accessible */
 #google_translate_element {
   position: absolute !important;
-  left: -9999px !important;
-  opacity: 0 !important;
-  pointer-events: none !important;
+  top: -1px !important;
+  left: -1px !important;
   width: 1px !important;
   height: 1px !important;
   overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+  opacity: 0.01 !important;
+  z-index: -1 !important;
 }
 
-/* Ensure Google Translate functionality works */
-.goog-te-combo {
-  opacity: 0 !important;
-  position: absolute !important;
-  left: -9999px !important;
+/* Allow Google Translate elements to exist */
+#google_translate_element .goog-te-gadget,
+#google_translate_element .goog-te-combo {
+  position: relative !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
 }
 
 /* Hide Google Translate banner but keep functionality */
