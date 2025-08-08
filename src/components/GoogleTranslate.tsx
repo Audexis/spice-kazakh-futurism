@@ -1,4 +1,6 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 
 declare global {
   interface Window {
@@ -7,25 +9,28 @@ declare global {
   }
 }
 
+const languages = [
+  { code: 'en', flag: '🇺🇸', name: 'English' },
+  { code: 'ru', flag: '🇷🇺', name: 'Русский' },
+  { code: 'kk', flag: '🇰🇿', name: 'Қазақ' },
+  { code: 'zh', flag: '🇨🇳', name: '中文' },
+  { code: 'ar', flag: '🇸🇦', name: 'العربية' },
+  { code: 'fr', flag: '🇫🇷', name: 'Français' },
+  { code: 'de', flag: '🇩🇪', name: 'Deutsch' },
+  { code: 'es', flag: '🇪🇸', name: 'Español' },
+  { code: 'hi', flag: '🇮🇳', name: 'हिन्दी' },
+  { code: 'tr', flag: '🇹🇷', name: 'Türkçe' },
+];
+
 let isInitialized = false;
 
 export const GoogleTranslate = () => {
+  const [currentLanguage, setCurrentLanguage] = useState(languages[0]);
+
   useEffect(() => {
-    // Prevent multiple initializations
+    // Initialize Google Translate invisibly
     if (isInitialized) return;
 
-    // Add Google Translate script
-    const addScript = () => {
-      if (document.getElementById('google-translate-script')) return;
-      
-      const script = document.createElement('script');
-      script.id = 'google-translate-script';
-      script.src = 'https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
-      script.async = true;
-      document.head.appendChild(script);
-    };
-
-    // Initialize Google Translate
     window.googleTranslateElementInit = () => {
       if (isInitialized) return;
       
@@ -33,12 +38,12 @@ export const GoogleTranslate = () => {
         new window.google.translate.TranslateElement(
           {
             pageLanguage: 'en',
-            includedLanguages: 'en,ru,kk,zh,fr,de,es,ar,hi,ur,tr,fa,ja,ko',
+            includedLanguages: languages.map(lang => lang.code).join(','),
             layout: window.google.translate.TranslateElement.InlineLayout.SIMPLE,
             autoDisplay: false,
             multilanguagePage: true,
           },
-          'google_translate_element'
+          'google_translate_element_hidden'
         );
         isInitialized = true;
       } catch (error) {
@@ -46,20 +51,59 @@ export const GoogleTranslate = () => {
       }
     };
 
-    // Load script if not already loaded
+    // Load script
     if (!window.google?.translate) {
-      addScript();
+      const script = document.createElement('script');
+      script.src = 'https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
+      script.async = true;
+      document.head.appendChild(script);
     } else {
       window.googleTranslateElementInit();
     }
   }, []);
 
+  const changeLanguage = (language: typeof languages[0]) => {
+    setCurrentLanguage(language);
+    
+    // Trigger Google Translate programmatically
+    setTimeout(() => {
+      const selectElement = document.querySelector('.goog-te-combo') as HTMLSelectElement;
+      if (selectElement) {
+        selectElement.value = language.code;
+        selectElement.dispatchEvent(new Event('change'));
+      }
+    }, 100);
+  };
+
   return (
-    <div className="relative">
-      <div 
-        id="google_translate_element" 
-        className="google-translate-widget"
-      />
+    <div className="flex items-center gap-2">
+      {/* Hidden Google Translate element */}
+      <div id="google_translate_element_hidden" className="hidden" />
+      
+      {/* Custom flag-based switcher */}
+      <Popover>
+        <PopoverTrigger asChild>
+          <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+            <span className="text-lg">{currentLanguage.flag}</span>
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent className="w-auto p-2 bg-background border border-border shadow-lg" align="end">
+          <div className="flex flex-col space-y-1">
+            {languages.map((lang) => (
+              <Button
+                key={lang.code}
+                variant={currentLanguage.code === lang.code ? "default" : "ghost"}
+                size="sm"
+                onClick={() => changeLanguage(lang)}
+                className="justify-start gap-2 text-sm min-w-[140px]"
+              >
+                <span className="text-base">{lang.flag}</span>
+                {lang.name}
+              </Button>
+            ))}
+          </div>
+        </PopoverContent>
+      </Popover>
     </div>
   );
 };

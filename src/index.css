@@ -140,53 +140,8 @@ All colors MUST be HSL.
     @apply bg-muted/30;
 }
 
-/* Google Translate Widget Styling */
-.google-translate-widget {
-  @apply inline-block;
-}
-
-/* Style the main dropdown */
-.goog-te-combo {
-  @apply bg-background border border-border rounded-md px-3 py-2 text-sm font-medium !important;
-  @apply focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary !important;
-  @apply transition-all duration-200 hover:border-primary/50 !important;
-  @apply text-foreground !important;
-  min-width: 140px !important;
-  appearance: none !important;
-  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e") !important;
-  background-position: right 8px center !important;
-  background-repeat: no-repeat !important;
-  background-size: 16px 12px !important;
-  padding-right: 32px !important;
-}
-
-/* Clean up the gadget container */
-.goog-te-gadget {
-  @apply text-sm font-medium !important;
-  font-family: inherit !important;
-}
-
-.goog-te-gadget-simple {
-  @apply bg-transparent border-0 !important;
-  font-family: inherit !important;
-}
-
-.goog-te-gadget-simple .goog-te-menu-value {
-  @apply text-foreground !important;
-  font-family: inherit !important;
-}
-
-.goog-te-gadget-simple .goog-te-menu-value span {
-  @apply border-0 !important;
-  color: inherit !important;
-}
-
-.goog-te-gadget-simple .goog-te-menu-value span:first-child {
-  @apply text-primary !important;
-}
-
-/* Hide the Google Translate icon */
-.goog-te-gadget-icon {
+/* Google Translate Widget - Hidden Implementation */
+#google_translate_element_hidden {
   display: none !important;
 }
 
@@ -199,13 +154,9 @@ body {
   top: 0 !important;
 }
 
-/* Dark mode support */
-.dark .goog-te-combo {
-  @apply bg-gray-800 border-gray-700 text-white !important;
-}
-
-.dark .goog-te-gadget-simple .goog-te-menu-value {
-  @apply text-white !important;
+/* Hide any visible Google Translate elements */
+.goog-te-gadget {
+  display: none !important;
 }
   
   ::-webkit-scrollbar-thumb {
