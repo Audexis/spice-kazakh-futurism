@@ -115,9 +115,17 @@ const Index = () => {
             <p className="text-xl md:text-2xl text-white/90 mb-8 drop-shadow-lg">
               Discover authentic flavors from the heart of India
             </p>
-            <p className="text-lg text-white/80 mb-8 drop-shadow-lg">
+            <p className="text-lg text-white/80 mb-6 drop-shadow-lg">
               Premium Indian grocery • Online spice bazaar • Hassle free and authentic ingredients
             </p>
+            <div className="bg-red-600/20 border border-red-400/30 rounded-lg px-6 py-3 mb-8 backdrop-blur-sm">
+              <p className="text-white font-semibold text-sm uppercase tracking-wide mb-1">
+                🚚 DELIVERY WITHIN CITY LIMITS
+              </p>
+              <p className="text-white/90 text-sm">
+                We offer affordable delivery within Almaty via Yandex
+              </p>
+            </div>
             <Button 
               size="lg" 
               className="bg-red-600 hover:bg-red-700 text-white font-semibold px-8 py-4 text-lg shadow-xl"
