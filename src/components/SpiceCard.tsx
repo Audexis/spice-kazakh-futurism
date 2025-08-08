@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -22,6 +23,7 @@ interface SpiceCardProps {
 }
 
 export const SpiceCard = ({ product, isAdmin, onEdit, onDelete }: SpiceCardProps) => {
+  const { t } = useTranslation();
   const [isDeleting, setIsDeleting] = useState(false);
   const { addToCart } = useCart();
   const { toast } = useToast();
@@ -30,8 +32,8 @@ export const SpiceCard = ({ product, isAdmin, onEdit, onDelete }: SpiceCardProps
     e.preventDefault(); // Prevent navigation to product page
     addToCart(product);
     toast({
-      title: 'Added to Cart',
-      description: `${product.name} has been added to your cart.`,
+      title: t('added_to_cart'),
+      description: `${product.name} ${t('added_to_cart_message')}`,
       variant: 'default'
     });
   };
@@ -96,8 +98,8 @@ export const SpiceCard = ({ product, isAdmin, onEdit, onDelete }: SpiceCardProps
                         onEdit?.(product);
                       }}
                     >
-                      <Edit className="mr-2 h-4 w-4" />
-                      Edit
+                       <Edit className="mr-2 h-4 w-4" />
+                       {t('edit')}
                     </DropdownMenuItem>
                     <DropdownMenuItem
                       onClick={(e) => {
@@ -107,8 +109,8 @@ export const SpiceCard = ({ product, isAdmin, onEdit, onDelete }: SpiceCardProps
                       className="text-destructive"
                       disabled={isDeleting}
                     >
-                      <Trash2 className="mr-2 h-4 w-4" />
-                      {isDeleting ? 'Deleting...' : 'Delete'}
+                       <Trash2 className="mr-2 h-4 w-4" />
+                       {isDeleting ? t('deleting') : t('delete')}
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
@@ -127,9 +129,9 @@ export const SpiceCard = ({ product, isAdmin, onEdit, onDelete }: SpiceCardProps
                 <div className="flex items-center">
                   {renderStars(product.rating)}
                 </div>
-                <span className="text-xs text-muted-foreground">
-                  {product.rating.toFixed(1)} ({product.review_count || 0} reviews)
-                </span>
+                 <span className="text-xs text-muted-foreground">
+                   {product.rating.toFixed(1)} ({product.review_count || 0} {t('reviews_text')})
+                 </span>
               </div>
             )}
           </div>
@@ -144,10 +146,10 @@ export const SpiceCard = ({ product, isAdmin, onEdit, onDelete }: SpiceCardProps
             </p>
           )}
           
-            {product.manufacturer && (
-              <p className="text-xs text-muted-foreground">
-                by {product.manufacturer}
-            </p>
+             {product.manufacturer && (
+               <p className="text-xs text-muted-foreground">
+                 {t('by')} {product.manufacturer}
+             </p>
           )}
           
           <div className="flex items-center justify-between gap-2">
@@ -162,13 +164,13 @@ export const SpiceCard = ({ product, isAdmin, onEdit, onDelete }: SpiceCardProps
               variant="outline"
               onClick={handleAddToCart}
               className="w-full"
-            >
-              <ShoppingCart className="h-4 w-4 mr-2" />
-              Add to Cart
+             >
+               <ShoppingCart className="h-4 w-4 mr-2" />
+               {t('add_to_cart')}
             </Button>
-            <Link to={`/product/${product.id}`} className="w-full">
-              <Button size="sm" className="w-full">
-                View Details
+             <Link to={`/product/${product.id}`} className="w-full">
+               <Button size="sm" className="w-full">
+                 {t('view_details')}
               </Button>
             </Link>
           </div>

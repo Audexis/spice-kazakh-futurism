@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ShoppingCart, Plus, Minus, Trash2, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -8,6 +9,7 @@ import { useCart } from '@/contexts/CartContext';
 import { CheckoutModal } from '@/components/CheckoutModal';
 
 export function Cart() {
+  const { t } = useTranslation();
   const { items, updateQuantity, removeFromCart, getCartTotal, getCartItemCount } = useCart();
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
@@ -36,17 +38,17 @@ export function Cart() {
         
         <SheetContent className="w-96">
           <SheetHeader>
-            <SheetTitle className="flex items-center gap-2">
-              <ShoppingCart className="h-5 w-5" />
-              Your Cart ({getCartItemCount()} items)
+           <SheetTitle className="flex items-center gap-2">
+             <ShoppingCart className="h-5 w-5" />
+             {t('cart')} ({getCartItemCount()} {t('cart_items')})
             </SheetTitle>
           </SheetHeader>
 
           <div className="mt-6 space-y-4">
             {items.length === 0 ? (
-              <div className="text-center py-8">
-                <ShoppingCart className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-                <p className="text-muted-foreground">Your cart is empty</p>
+               <div className="text-center py-8">
+                 <ShoppingCart className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+                 <p className="text-muted-foreground">{t('cart_empty')}</p>
               </div>
             ) : (
               <>
@@ -67,7 +69,7 @@ export function Cart() {
                       
                       <div className="flex-1 min-w-0">
                         <h4 className="font-medium text-sm truncate">{item.product.name}</h4>
-                        <p className="text-sm text-muted-foreground">₸{item.product.price.toFixed(2)} each</p>
+                        <p className="text-sm text-muted-foreground">₸{item.product.price.toFixed(2)} {t('each')}</p>
                         
                         <div className="flex items-center justify-between mt-2">
                           <div className="flex items-center space-x-2">
@@ -111,8 +113,8 @@ export function Cart() {
                 <Separator />
 
                 <div className="space-y-4">
-                  <div className="flex justify-between items-center text-lg font-semibold">
-                    <span>Total:</span>
+                   <div className="flex justify-between items-center text-lg font-semibold">
+                     <span>{t('total')}:</span>
                     <span>₸{getCartTotal().toFixed(2)}</span>
                   </div>
 
@@ -120,9 +122,9 @@ export function Cart() {
                     onClick={handleCheckout}
                     className="w-full"
                     size="lg"
-                  >
-                    Proceed to Checkout
-                  </Button>
+                   >
+                     {t('proceed_to_checkout')}
+                   </Button>
                 </div>
               </>
             )}

@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useParams, Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -35,6 +36,7 @@ interface Review {
 }
 
 export default function ProductDetail() {
+  const { t } = useTranslation();
   const { id } = useParams<{ id: string }>();
   const [product, setProduct] = useState<Product | null>(null);
   const [reviews, setReviews] = useState<Review[]>([]);
@@ -112,8 +114,8 @@ export default function ProductDetail() {
       };
       addToCart(cartProduct);
       toast({
-        title: 'Added to Cart',
-        description: `${product.name} has been added to your cart.`,
+        title: t('added_to_cart'),
+        description: `${product.name} ${t('added_to_cart_message')}`,
         variant: 'default'
       });
     }
@@ -122,8 +124,8 @@ export default function ProductDetail() {
   const handleShare = () => {
     navigator.clipboard.writeText(window.location.href);
     toast({
-      title: 'Link Copied',
-      description: 'Product link copied to clipboard!',
+      title: t('link_copied'),
+      description: t('link_copied_message'),
       variant: 'default'
     });
   };
@@ -156,14 +158,14 @@ export default function ProductDetail() {
         <Navbar />
         <div className="container mx-auto px-4 py-8">
           <div className="text-center">
-            <h1 className="text-2xl font-bold mb-4">Product Not Found</h1>
+            <h1 className="text-2xl font-bold mb-4">{t('product_not_found')}</h1>
             <p className="text-muted-foreground mb-6">
-              {error || 'The product you are looking for does not exist.'}
+              {error || t('product_not_found_message')}
             </p>
             <Link to="/marketplace">
               <Button>
                 <ArrowLeft className="h-4 w-4 mr-2" />
-                Back to Marketplace
+                {t('back_to_marketplace')}
               </Button>
             </Link>
           </div>
@@ -181,7 +183,7 @@ export default function ProductDetail() {
         <div className="container mx-auto px-4">
           <Link to="/marketplace" className="inline-flex items-center text-muted-foreground hover:text-foreground mb-6">
             <ArrowLeft className="h-4 w-4 mr-2" />
-            Back to Marketplace
+            {t('back_to_marketplace')}
           </Link>
           
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -214,7 +216,7 @@ export default function ProductDetail() {
                   {renderStars(product.rating || 0)}
                 </div>
                 <span className="text-sm text-muted-foreground">
-                  {product.rating?.toFixed(1)} ({product.review_count || 0} reviews)
+                  {product.rating?.toFixed(1)} ({product.review_count || 0} {t('reviews_text')})
                 </span>
               </div>
 
@@ -226,62 +228,62 @@ export default function ProductDetail() {
               {/* Product Details Grid */}
               <div className="grid grid-cols-2 gap-4 bg-muted/50 p-4 rounded-lg">
                 <div>
-                  <h4 className="font-semibold text-sm text-muted-foreground">SKU</h4>
+                  <h4 className="font-semibold text-sm text-muted-foreground">{t('sku')}</h4>
                   <p className="text-sm">{product.id.slice(0, 8).toUpperCase()}</p>
                 </div>
                 <div>
-                  <h4 className="font-semibold text-sm text-muted-foreground">Category</h4>
+                  <h4 className="font-semibold text-sm text-muted-foreground">{t('category')}</h4>
                   <p className="text-sm">{product.category?.name || 'Uncategorized'}</p>
                 </div>
                 <div>
-                  <h4 className="font-semibold text-sm text-muted-foreground">Manufacturer</h4>
+                  <h4 className="font-semibold text-sm text-muted-foreground">{t('manufacturer')}</h4>
                   <p className="text-sm">{product.manufacturer || 'N/A'}</p>
                 </div>
                 <div>
-                  <h4 className="font-semibold text-sm text-muted-foreground">Availability</h4>
-                  <p className="text-sm text-green-600">In Stock</p>
+                  <h4 className="font-semibold text-sm text-muted-foreground">{t('availability')}</h4>
+                  <p className="text-sm text-green-600">{t('in_stock')}</p>
                 </div>
               </div>
 
               {/* Description */}
               <div>
-                <h3 className="text-lg font-semibold mb-2">Product Description</h3>
+                <h3 className="text-lg font-semibold mb-2">{t('product_description')}</h3>
                 <p className="text-muted-foreground leading-relaxed">
-                  {product.description || 'Experience the authentic flavors of traditional Kazakhstani cuisine with this premium product. Carefully sourced and selected for quality, this item brings the essence of Central Asian culinary heritage to your kitchen.'}
+                  {product.description || 'Experience the authentic flavors of traditional Indian cuisine with this premium product. Carefully sourced and selected for quality, this item brings the essence of Indian culinary heritage to your kitchen.'}
                 </p>
               </div>
 
               {/* Features */}
               <div>
-                <h3 className="text-lg font-semibold mb-3">Key Features</h3>
+                <h3 className="text-lg font-semibold mb-3">{t('key_features')}</h3>
                 <ul className="space-y-2 text-sm text-muted-foreground">
                   <li className="flex items-center">
                     <span className="w-2 h-2 bg-primary rounded-full mr-3"></span>
-                    Premium quality ingredients
+                    {t('premium_quality')}
                   </li>
                   <li className="flex items-center">
                     <span className="w-2 h-2 bg-primary rounded-full mr-3"></span>
-                    Traditional Kazakhstani sourcing
+                    {t('traditional_sourcing')}
                   </li>
                   <li className="flex items-center">
                     <span className="w-2 h-2 bg-primary rounded-full mr-3"></span>
-                    Carefully processed and packaged
+                    {t('carefully_processed')}
                   </li>
                   <li className="flex items-center">
                     <span className="w-2 h-2 bg-primary rounded-full mr-3"></span>
-                    Authentic flavor profile
+                    {t('authentic_flavor')}
                   </li>
                 </ul>
               </div>
 
               {/* Shipping Info */}
               <div className="bg-primary/10 p-4 rounded-lg">
-                <h4 className="font-semibold mb-2">Shipping Information</h4>
+                <h4 className="font-semibold mb-2">{t('shipping_information')}</h4>
                 <div className="space-y-1 text-sm text-muted-foreground">
-                  <p>• Free shipping on orders over ₸5,000</p>
-                  <p>• Express delivery available (1-2 business days)</p>
-                  <p>• Standard delivery: 3-5 business days</p>
-                  <p>• International shipping available</p>
+                  <p>• {t('free_shipping')}</p>
+                  <p>• {t('express_delivery')}</p>
+                  <p>• {t('standard_delivery')}</p>
+                  <p>• {t('international_shipping')}</p>
                 </div>
               </div>
 
@@ -289,7 +291,7 @@ export default function ProductDetail() {
               <div className="flex flex-wrap gap-4">
                 <Button onClick={handleAddToCart} className="flex-1 min-w-0">
                   <ShoppingCart className="h-4 w-4 mr-2" />
-                  Add to Cart
+                  {t('add_to_cart')}
                 </Button>
                 <div className="flex gap-2">
                   <Button variant="outline" size="icon" className="shrink-0">
@@ -320,8 +322,8 @@ export default function ProductDetail() {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center justify-between">
-              <span>Customer Reviews</span>
-              <Badge variant="outline">{reviews.length} reviews</Badge>
+              <span>{t('customer_reviews')}</span>
+              <Badge variant="outline">{reviews.length} {t('reviews_text')}</Badge>
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -356,7 +358,7 @@ export default function ProductDetail() {
               </div>
             ) : (
               <div className="text-center py-8">
-                <p className="text-muted-foreground">No reviews yet. Be the first to review this product!</p>
+                <p className="text-muted-foreground">{t('no_reviews')}</p>
               </div>
             )}
           </CardContent>

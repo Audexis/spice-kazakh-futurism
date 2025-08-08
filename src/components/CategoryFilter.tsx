@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Category } from '@/hooks/useSpiceData';
@@ -33,6 +34,7 @@ const getCategoryGradient = (categoryName: string) => {
 };
 
 export const CategoryFilter = ({ categories, selectedCategory, onCategoryChange }: CategoryFilterProps) => {
+  const { t } = useTranslation();
   const [filterRef, setFilterRef] = useState<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -54,9 +56,9 @@ export const CategoryFilter = ({ categories, selectedCategory, onCategoryChange 
   };
 
   return (
-    <div ref={setFilterRef} className="card-modern">
-      <h2 className="text-xl font-semibold mb-6">
-        Browse Categories
+     <div ref={setFilterRef} className="card-modern">
+       <h2 className="text-xl font-semibold mb-6">
+         {t('browse_categories')}
       </h2>
       
       <div className="flex flex-wrap gap-3">
@@ -68,8 +70,8 @@ export const CategoryFilter = ({ categories, selectedCategory, onCategoryChange 
             selectedCategory === null ? 'shadow-md' : ''
           }`}
         >
-          <span className="text-base mr-2">✨</span>
-          All Categories
+           <span className="text-base mr-2">✨</span>
+           {t('all_categories')}
         </Button>
 
         {categories.map((category) => (

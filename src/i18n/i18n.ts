@@ -70,9 +70,7 @@ const resources = {
       "learn_more": "Learn More",
       
       // Product actions
-      "add_to_cart": "Add to Cart",
       "buy_now": "Buy Now",
-      "view_details": "View Details",
       "quick_view": "Quick View",
       
       // Cart
@@ -80,7 +78,6 @@ const resources = {
       "cart_total": "Cart Total",
       "shipping": "Shipping",
       "tax": "Tax",
-      "proceed_to_checkout": "Proceed to Checkout",
       
       // Forms
       "name": "Name",
@@ -101,7 +98,44 @@ const resources = {
       "manage_products": "Manage Products",
       "manage_orders": "Manage Orders",
       "statistics": "Statistics",
-      "settings": "Settings"
+      "settings": "Settings",
+      
+      // Cart specific
+      "cart_items": "items",
+      "cart_empty_message": "Your cart is empty",
+      "each": "each",
+      "proceed_to_checkout": "Proceed to Checkout",
+      
+      // Product details
+      "by": "by",
+      "reviews_text": "reviews",
+      "sku": "SKU",
+      "manufacturer": "Manufacturer",
+      "product_description": "Product Description",
+      "key_features": "Key Features",
+      "premium_quality": "Premium quality ingredients",
+      "traditional_sourcing": "Traditional Kazakhstani sourcing",
+      "carefully_processed": "Carefully processed and packaged",
+      "authentic_flavor": "Authentic flavor profile",
+      "shipping_information": "Shipping Information",
+      "free_shipping": "Free shipping on orders over ₸5,000",
+      "express_delivery": "Express delivery available (1-2 business days)",
+      "standard_delivery": "Standard delivery: 3-5 business days",
+      "international_shipping": "International shipping available",
+      "customer_reviews": "Customer Reviews",
+      "no_reviews": "No reviews yet. Be the first to review this product!",
+      "product_not_found": "Product Not Found",
+      "product_not_found_message": "The product you are looking for does not exist.",
+      "back_to_marketplace": "Back to Marketplace",
+      "link_copied": "Link Copied",
+      "link_copied_message": "Product link copied to clipboard!",
+      "deleting": "Deleting...",
+      "added_to_cart": "Added to Cart",
+      "added_to_cart_message": "has been added to your cart.",
+      
+      // Category filter
+      "browse_categories": "Browse Categories",
+      "all_categories": "All Categories"
     }
   },
   ru: {
@@ -186,7 +220,37 @@ const resources = {
       "manage_products": "Управление товарами",
       "manage_orders": "Управление заказами",
       "statistics": "Статистика",
-      "settings": "Настройки"
+      "settings": "Настройки",
+      
+      // Product details
+      "by": "от",
+      "reviews_text": "отзывов",
+      "sku": "Артикул",
+      "product_description": "Описание товара",
+      "key_features": "Ключевые особенности",
+      "premium_quality": "Ингредиенты премиум качества",
+      "traditional_sourcing": "Традиционное казахстанское происхождение",
+      "carefully_processed": "Тщательно обработано и упаковано",
+      "authentic_flavor": "Аутентичный вкусовой профиль",
+      "shipping_information": "Информация о доставке",
+      "free_shipping": "Бесплатная доставка при заказе от ₸5,000",
+      "express_delivery": "Экспресс-доставка доступна (1-2 рабочих дня)",
+      "standard_delivery": "Стандартная доставка: 3-5 рабочих дней",
+      "international_shipping": "Международная доставка доступна",
+      "customer_reviews": "Отзывы покупателей",
+      "no_reviews": "Пока нет отзывов. Станьте первым, кто оценит этот товар!",
+      "product_not_found": "Товар не найден",
+      "product_not_found_message": "Товар, который вы ищете, не существует.",
+      "back_to_marketplace": "Вернуться в магазин",
+      "link_copied": "Ссылка скопирована",
+      "link_copied_message": "Ссылка на товар скопирована в буфер обмена!",
+      "deleting": "Удаление...",
+      "added_to_cart": "Добавлено в корзину",
+      "added_to_cart_message": "добавлен в вашу корзину.",
+      
+      // Category filter
+      "browse_categories": "Категории товаров",
+      "all_categories": "Все категории"
     }
   },
   ar: {
