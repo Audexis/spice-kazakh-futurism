@@ -151,6 +151,9 @@ const resources = {
       "Moong Dal Yellow": "Moong Dal Yellow",
       "Toor Dal": "Toor Dal",
       "Masala Papad": "Masala Papad",
+      "Namkeen Mix": "Namkeen Mix",
+      "Gulab Jamun Mix": "Gulab Jamun Mix",
+      "Rasgulla Pack": "Rasgulla Pack",
       "Coriander Seeds": "Coriander Seeds",
       "Cardamom Pods": "Cardamom Pods",
       "Cinnamon Sticks": "Cinnamon Sticks",
@@ -177,7 +180,10 @@ const resources = {
       "Fine ground chickpea flour for snacks and sweets": "Fine ground chickpea flour for snacks and sweets",
       "Split yellow mung beans, protein-rich lentils": "Split yellow mung beans, protein-rich lentils",
       "Yellow pigeon peas, staple protein in Indian cooking": "Yellow pigeon peas, staple protein in Indian cooking",
-      "Crispy lentil crackers with spices": "Crispy lentil crackers with spices"
+      "Crispy lentil crackers with spices": "Crispy lentil crackers with spices",
+      "Traditional Indian savory snack mix": "Traditional Indian savory snack mix",
+      "Ready-to-make sweet dumplings in syrup": "Ready-to-make sweet dumplings in syrup",
+      "Soft cottage cheese balls in sugar syrup": "Soft cottage cheese balls in sugar syrup"
     }
   },
   ru: {
@@ -308,6 +314,9 @@ const resources = {
       "Moong Dal Yellow": "Мунг Дал Желтый",
       "Toor Dal": "Тур Дал",
       "Masala Papad": "Масала Папад",
+      "Namkeen Mix": "Намкин Микс",
+      "Gulab Jamun Mix": "Гулаб Джамун Микс",
+      "Rasgulla Pack": "Расгулла Упаковка",
       "Coriander Seeds": "Семена Кориандра",
       "Cardamom Pods": "Стручки Кардамона",
       "Cinnamon Sticks": "Палочки Корицы",
@@ -334,7 +343,10 @@ const resources = {
       "Fine ground chickpea flour for snacks and sweets": "Мелко помолотая нутовая мука для снеков и сладостей",
       "Split yellow mung beans, protein-rich lentils": "Расколотая желтая фасоль мунг, богатая белком чечевица",
       "Yellow pigeon peas, staple protein in Indian cooking": "Желтый голубиный горошек, основной белок в индийской кухне",
-      "Crispy lentil crackers with spices": "Хрустящие чечевичные крекеры со специями"
+      "Crispy lentil crackers with spices": "Хрустящие чечевичные крекеры со специями",
+      "Traditional Indian savory snack mix": "Традиционная индийская соленая смесь снеков",
+      "Ready-to-make sweet dumplings in syrup": "Готовая к приготовлению смесь для сладких клецок в сиропе",
+      "Soft cottage cheese balls in sugar syrup": "Мягкие шарики из творога в сахарном сиропе"
     }
   },
   ar: {

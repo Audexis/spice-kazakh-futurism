@@ -142,7 +142,11 @@ export const SpiceCard = ({ product, isAdmin, onEdit, onDelete }: SpiceCardProps
         <div className="space-y-3">
          {product.description && (
            <p className="text-sm text-muted-foreground line-clamp-2">
-             {t(product.description) !== product.description ? t(product.description) : product.description}
+             {(() => {
+               const translated = t(product.description);
+               console.log('Product description:', product.description, 'Translated:', translated, 'Are different:', translated !== product.description);
+               return translated !== product.description ? translated : product.description;
+             })()}
            </p>
           )}
           
