@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Search, Menu, X, Settings, LogOut } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Cart } from '@/components/Cart';
+import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 import { useAdminAuth } from '@/hooks/useAdminAuth';
 
 interface NavbarProps {
@@ -86,8 +87,9 @@ export const Navbar = ({ isAdmin, onAdminToggle, searchQuery, onSearchChange }: 
             </div>
           )}
 
-          {/* Cart & Admin Controls & Mobile Menu */}
+          {/* Language, Cart & Admin Controls & Mobile Menu */}
           <div className="flex items-center space-x-4">
+            <LanguageSwitcher />
             <Cart />
             
             {adminUser && (
