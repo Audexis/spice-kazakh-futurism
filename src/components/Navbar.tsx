@@ -6,6 +6,7 @@ import { Search, Menu, X, Settings, LogOut } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Cart } from '@/components/Cart';
 import { LanguageSwitcher } from '@/components/LanguageSwitcher';
+import { useTranslation } from '@/hooks/useTranslation';
 import { useAdminAuth } from '@/hooks/useAdminAuth';
 
 interface NavbarProps {
@@ -20,10 +21,11 @@ export const Navbar = ({ isAdmin, onAdminToggle, searchQuery, onSearchChange }: 
   const location = useLocation();
   const navigate = useNavigate();
   const { adminUser, logout } = useAdminAuth();
+  const { t } = useTranslation();
 
   const navItems = [
-    { name: 'Home', path: '/' },
-    { name: 'Marketplace', path: '/marketplace' },
+    { name: t('home'), path: '/' },
+    { name: t('marketplace'), path: '/marketplace' },
   ];
 
   const isActive = (path: string) => location.pathname === path;
@@ -78,7 +80,7 @@ export const Navbar = ({ isAdmin, onAdminToggle, searchQuery, onSearchChange }: 
               <div className="relative w-full">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
-                  placeholder="Search products..."
+                  placeholder={t('searchProducts')}
                   value={searchQuery}
                   onChange={(e) => onSearchChange(e.target.value)}
                   className="pl-10 bg-background/50"
@@ -101,7 +103,7 @@ export const Navbar = ({ isAdmin, onAdminToggle, searchQuery, onSearchChange }: 
                   className="focus-ring bg-background/80"
                 >
                   <Settings className="h-4 w-4 mr-2" />
-                  {isAdmin ? '👤 USER' : '🔧 ADMIN'}
+                  {isAdmin ? t('userMode') : t('adminMode')}
                 </Button>
                 <Button
                   variant="ghost"
@@ -134,7 +136,7 @@ export const Navbar = ({ isAdmin, onAdminToggle, searchQuery, onSearchChange }: 
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
-                  placeholder="Search products..."
+                  placeholder={t('searchProducts')}
                   value={searchQuery}
                   onChange={(e) => onSearchChange(e.target.value)}
                   className="pl-10"
@@ -170,7 +172,7 @@ export const Navbar = ({ isAdmin, onAdminToggle, searchQuery, onSearchChange }: 
                   className="w-full focus-ring"
                 >
                   <Settings className="h-4 w-4 mr-2" />
-                  {isAdmin ? '👤 USER MODE' : '🔧 ADMIN MODE'}
+                  {isAdmin ? t('userMode') : t('adminMode')}
                 </Button>
                 <Button
                   variant="ghost"
@@ -179,7 +181,7 @@ export const Navbar = ({ isAdmin, onAdminToggle, searchQuery, onSearchChange }: 
                   className="w-full"
                 >
                   <LogOut className="h-4 w-4 mr-2" />
-                  Logout
+                  {t('logout')}
                 </Button>
               </div>
             )}
