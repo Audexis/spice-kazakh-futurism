@@ -1,13 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-
-declare global {
-  interface Window {
-    google: any;
-    googleTranslateElementInit: () => void;
-  }
-}
 
 const languages = [
   { code: 'en', flag: '🇺🇸', name: 'English' },
@@ -22,140 +16,29 @@ const languages = [
   { code: 'tr', flag: '🇹🇷', name: 'Türkçe' },
 ];
 
-let isInitialized = false;
-
 export const GoogleTranslate = () => {
-  const [currentLanguage, setCurrentLanguage] = useState(languages[0]);
-  const [isLoaded, setIsLoaded] = useState(false);
+  const { i18n } = useTranslation();
+  const [currentLanguage, setCurrentLanguage] = useState(() => {
+    const currentLang = i18n.language || 'en';
+    return languages.find(lang => lang.code === currentLang) || languages[0];
+  });
 
-  useEffect(() => {
-    // Initialize Google Translate
-    if (isInitialized) {
-      console.log('Google Translate already initialized');
-      return;
-    }
-
-    console.log('Initializing Google Translate...');
-
-    window.googleTranslateElementInit = () => {
-      if (isInitialized) return;
-      
-      try {
-        console.log('Creating Google Translate Element...');
-        new window.google.translate.TranslateElement(
-          {
-            pageLanguage: 'en',
-            includedLanguages: languages.map(lang => lang.code).join(','),
-            layout: window.google.translate.TranslateElement.InlineLayout.SIMPLE,
-            autoDisplay: false,
-            multilanguagePage: true,
-          },
-          'google_translate_element'
-        );
-        isInitialized = true;
-        setIsLoaded(true);
-        console.log('Google Translate initialized successfully');
-        
-        // Debug: Log available options after a delay
-        setTimeout(() => {
-          const selectElement = document.querySelector('.goog-te-combo') as HTMLSelectElement;
-          if (selectElement) {
-            console.log('Google Translate dropdown found with options:', Array.from(selectElement.options).map(opt => ({ value: opt.value, text: opt.text })));
-          } else {
-            console.log('Google Translate dropdown not found');
-          }
-        }, 2000);
-      } catch (error) {
-        console.error('Google Translate initialization error:', error);
-      }
-    };
-
-    // Load script
-    if (!window.google?.translate) {
-      console.log('Loading Google Translate script...');
-      const script = document.createElement('script');
-      script.src = 'https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
-      script.async = true;
-      script.onload = () => console.log('Google Translate script loaded');
-      script.onerror = () => console.error('Failed to load Google Translate script');
-      document.head.appendChild(script);
-    } else {
-      console.log('Google Translate already available, initializing...');
-      window.googleTranslateElementInit();
-    }
-  }, []);
-
-  const changeLanguage = (language: typeof languages[0]) => {
-    console.log('Changing language to:', language.name, language.code);
+  const changeLanguage = async (language: typeof languages[0]) => {
     setCurrentLanguage(language);
+    await i18n.changeLanguage(language.code);
     
-    if (!isLoaded) {
-      console.log('Google Translate not loaded yet, skipping translation');
-      return;
+    // Apply RTL direction for Arabic
+    if (language.code === 'ar') {
+      document.documentElement.dir = 'rtl';
+      document.documentElement.lang = 'ar';
+    } else {
+      document.documentElement.dir = 'ltr';
+      document.documentElement.lang = language.code;
     }
-    
-    // Wait for Google Translate to be ready, then trigger translation
-    const triggerTranslation = () => {
-      console.log('Attempting to trigger translation...');
-      const selectElement = document.querySelector('.goog-te-combo') as HTMLSelectElement;
-      if (selectElement) {
-        console.log('Found Google Translate dropdown');
-        
-        // Log all available options
-        const options = Array.from(selectElement.options);
-        console.log('Available translation options:', options.map(opt => ({ value: opt.value, text: opt.text })));
-        
-        // Find the correct option value for the language
-        let foundOption = false;
-        for (let i = 0; i < options.length; i++) {
-          const optionValue = options[i].value;
-          const optionText = options[i].text;
-          
-          // Try multiple matching strategies
-          if (optionValue.includes(language.code) || 
-              optionValue === language.code || 
-              optionText.toLowerCase().includes(language.name.toLowerCase())) {
-            console.log('Found matching option:', { value: optionValue, text: optionText });
-            selectElement.value = optionValue;
-            selectElement.dispatchEvent(new Event('change', { bubbles: true }));
-            foundOption = true;
-            break;
-          }
-        }
-        
-        if (!foundOption) {
-          console.log('No matching option found for language:', language.code);
-        }
-      } else {
-        console.log('Google Translate dropdown not found');
-      }
-    };
-
-    // Try multiple times with delays to ensure it works
-    setTimeout(triggerTranslation, 100);
-    setTimeout(triggerTranslation, 500);
-    setTimeout(triggerTranslation, 1000);
   };
 
   return (
     <div className="flex items-center gap-2">
-      {/* Google Translate element - visually hidden but accessible */}
-      <div 
-        id="google_translate_element" 
-        style={{ 
-          position: 'absolute',
-          top: '-1px',
-          left: '-1px', 
-          width: '1px',
-          height: '1px',
-          overflow: 'hidden',
-          clip: 'rect(0, 0, 0, 0)',
-          whiteSpace: 'nowrap',
-          border: '0'
-        }}
-      />
-      
-      {/* Custom flag-based switcher */}
       <Popover>
         <PopoverTrigger asChild>
           <Button variant="ghost" size="sm" className="h-8 w-8 p-0 hover:bg-accent">
