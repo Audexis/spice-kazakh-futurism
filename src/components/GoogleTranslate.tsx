@@ -26,9 +26,10 @@ let isInitialized = false;
 
 export const GoogleTranslate = () => {
   const [currentLanguage, setCurrentLanguage] = useState(languages[0]);
+  const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
-    // Initialize Google Translate invisibly
+    // Initialize Google Translate
     if (isInitialized) return;
 
     window.googleTranslateElementInit = () => {
@@ -43,9 +44,10 @@ export const GoogleTranslate = () => {
             autoDisplay: false,
             multilanguagePage: true,
           },
-          'google_translate_element_hidden'
+          'google_translate_element'
         );
         isInitialized = true;
+        setIsLoaded(true);
       } catch (error) {
         console.log('Google Translate initialization error:', error);
       }
@@ -65,29 +67,47 @@ export const GoogleTranslate = () => {
   const changeLanguage = (language: typeof languages[0]) => {
     setCurrentLanguage(language);
     
-    // Trigger Google Translate programmatically
-    setTimeout(() => {
+    if (!isLoaded) return;
+    
+    // Wait for Google Translate to be ready, then trigger translation
+    const triggerTranslation = () => {
       const selectElement = document.querySelector('.goog-te-combo') as HTMLSelectElement;
       if (selectElement) {
-        selectElement.value = language.code;
-        selectElement.dispatchEvent(new Event('change'));
+        // Find the correct option value for the language
+        const options = selectElement.options;
+        for (let i = 0; i < options.length; i++) {
+          if (options[i].value.includes(language.code)) {
+            selectElement.value = options[i].value;
+            selectElement.dispatchEvent(new Event('change', { bubbles: true }));
+            break;
+          }
+        }
       }
-    }, 100);
+    };
+
+    // Try multiple times with delays to ensure it works
+    setTimeout(triggerTranslation, 100);
+    setTimeout(triggerTranslation, 500);
+    setTimeout(triggerTranslation, 1000);
   };
 
   return (
     <div className="flex items-center gap-2">
-      {/* Hidden Google Translate element */}
-      <div id="google_translate_element_hidden" className="hidden" />
+      {/* Google Translate element - positioned off-screen but functional */}
+      <div 
+        id="google_translate_element" 
+        className="absolute -left-[9999px] opacity-0 pointer-events-none"
+        style={{ position: 'absolute', left: '-9999px', opacity: 0 }}
+      />
       
       {/* Custom flag-based switcher */}
       <Popover>
         <PopoverTrigger asChild>
-          <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+          <Button variant="ghost" size="sm" className="h-8 w-8 p-0 hover:bg-accent">
             <span className="text-lg">{currentLanguage.flag}</span>
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-auto p-2 bg-background border border-border shadow-lg" align="end">
+        <PopoverContent className="w-auto p-2 bg-background border border-border shadow-lg z-50" align="end">
           <div className="flex flex-col space-y-1">
             {languages.map((lang) => (
               <Button
@@ -95,7 +115,7 @@ export const GoogleTranslate = () => {
                 variant={currentLanguage.code === lang.code ? "default" : "ghost"}
                 size="sm"
                 onClick={() => changeLanguage(lang)}
-                className="justify-start gap-2 text-sm min-w-[140px]"
+                className="justify-start gap-2 text-sm min-w-[140px] hover:bg-accent"
               >
                 <span className="text-base">{lang.flag}</span>
                 {lang.name}
