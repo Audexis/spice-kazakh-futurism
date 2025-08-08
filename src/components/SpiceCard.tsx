@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button";
 import { Product } from "@/hooks/useSpiceData";
 import { MoreHorizontal, Edit, Trash2, Star, ShoppingCart } from "lucide-react";
 import { useCart } from "@/contexts/CartContext";
-import { useTranslation } from "@/hooks/useTranslation";
 import { useToast } from "@/hooks/use-toast";
 import {
   DropdownMenu,
@@ -25,14 +24,13 @@ interface SpiceCardProps {
 export const SpiceCard = ({ product, isAdmin, onEdit, onDelete }: SpiceCardProps) => {
   const [isDeleting, setIsDeleting] = useState(false);
   const { addToCart } = useCart();
-  const { t } = useTranslation();
   const { toast } = useToast();
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault(); // Prevent navigation to product page
     addToCart(product);
     toast({
-      title: t('success'),
+      title: 'Added to Cart',
       description: `${product.name} has been added to your cart.`,
       variant: 'default'
     });
@@ -99,7 +97,7 @@ export const SpiceCard = ({ product, isAdmin, onEdit, onDelete }: SpiceCardProps
                       }}
                     >
                       <Edit className="mr-2 h-4 w-4" />
-                      {t('edit')}
+                      Edit
                     </DropdownMenuItem>
                     <DropdownMenuItem
                       onClick={(e) => {
@@ -110,7 +108,7 @@ export const SpiceCard = ({ product, isAdmin, onEdit, onDelete }: SpiceCardProps
                       disabled={isDeleting}
                     >
                       <Trash2 className="mr-2 h-4 w-4" />
-                      {isDeleting ? t('loading') : t('delete')}
+                      {isDeleting ? 'Deleting...' : 'Delete'}
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
@@ -119,7 +117,7 @@ export const SpiceCard = ({ product, isAdmin, onEdit, onDelete }: SpiceCardProps
 
             {product.category && (
               <Badge variant="secondary" className="text-xs">
-                {t(product.category.name) || product.category.name}
+                {product.category.name}
               </Badge>
             )}
 
@@ -130,7 +128,7 @@ export const SpiceCard = ({ product, isAdmin, onEdit, onDelete }: SpiceCardProps
                   {renderStars(product.rating)}
                 </div>
                 <span className="text-xs text-muted-foreground">
-                  {product.rating.toFixed(1)} ({product.review_count || 0} {t('reviews')})
+                  {product.rating.toFixed(1)} ({product.review_count || 0} reviews)
                 </span>
               </div>
             )}
@@ -148,7 +146,7 @@ export const SpiceCard = ({ product, isAdmin, onEdit, onDelete }: SpiceCardProps
           
             {product.manufacturer && (
               <p className="text-xs text-muted-foreground">
-                {t('by')} {product.manufacturer}
+                by {product.manufacturer}
             </p>
           )}
           
@@ -166,11 +164,11 @@ export const SpiceCard = ({ product, isAdmin, onEdit, onDelete }: SpiceCardProps
               className="w-full"
             >
               <ShoppingCart className="h-4 w-4 mr-2" />
-              {t('addToCart')}
+              Add to Cart
             </Button>
             <Link to={`/product/${product.id}`} className="w-full">
               <Button size="sm" className="w-full">
-                {t('viewDetails')}
+                View Details
               </Button>
             </Link>
           </div>

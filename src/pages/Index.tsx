@@ -9,7 +9,6 @@ import { OrderManagement } from "@/components/OrderManagement";
 import { AdminProductEdit } from "@/components/AdminProductEdit";
 import { useSpiceData } from "@/hooks/useSpiceData";
 import { useAdminAuth } from "@/hooks/useAdminAuth";
-import { useTranslation } from "@/hooks/useTranslation";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Product } from "@/hooks/useSpiceData";
@@ -17,7 +16,6 @@ import { Product } from "@/hooks/useSpiceData";
 const Index = () => {
   const { categories, products, loading } = useSpiceData();
   const { adminUser } = useAdminAuth();
-  const { t } = useTranslation();
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [isAdminMode, setIsAdminMode] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
@@ -42,17 +40,17 @@ const Index = () => {
           <div className="container mx-auto px-4 py-8">
             <div className="mb-8">
               <h1 className="text-3xl font-bold font-orbitron text-primary-gradient mb-2">
-                {t('adminDashboard')}
+                Admin Dashboard
               </h1>
               <p className="text-muted-foreground">
-                {t('welcomeBack')} {adminUser.name}
+                Welcome back, {adminUser.name}
               </p>
             </div>
 
             <Tabs defaultValue="orders" className="space-y-6">
               <TabsList className="grid w-full grid-cols-2 max-w-md">
-                <TabsTrigger value="orders">{t('orderManagement')}</TabsTrigger>
-                <TabsTrigger value="products">{t('productManagement')}</TabsTrigger>
+                <TabsTrigger value="orders">Order Management</TabsTrigger>
+                <TabsTrigger value="products">Product Management</TabsTrigger>
               </TabsList>
               
               <TabsContent value="orders">
@@ -71,7 +69,7 @@ const Index = () => {
                           onClick={() => setEditingProduct(product)}
                           className="absolute top-2 right-2 z-10 bg-background/90 backdrop-blur-sm"
                         >
-                          {t('edit')}
+                          Edit
                         </Button>
                       </div>
                     ))}
@@ -112,20 +110,20 @@ const Index = () => {
         <div className="relative z-10 container mx-auto px-4 py-32 text-center flex items-center justify-center min-h-screen">
           <div className="max-w-4xl mx-auto">
             <h1 className="text-5xl md:text-7xl font-bold font-serif text-white mb-6 drop-shadow-2xl">
-              {t('welcomeTitle')}
+              Indian Spices in Almaty
             </h1>
             <p className="text-xl md:text-2xl text-white/90 mb-8 drop-shadow-lg">
-              {t('welcomeSubtitle')}
+              Discover authentic flavors from the heart of India
             </p>
             <p className="text-lg text-white/80 mb-6 drop-shadow-lg">
-              {t('premiumIndianGrocery')}
+              Premium Indian grocery • Online spice bazaar • Hassle free and authentic ingredients
             </p>
             <div className="bg-red-600/20 border border-red-400/30 rounded-lg px-6 py-3 mb-8 backdrop-blur-sm">
               <p className="text-white font-semibold text-sm uppercase tracking-wide mb-1">
-                {t('deliveryInfo')}
+                🚚 DELIVERY WITHIN CITY LIMITS
               </p>
               <p className="text-white/90 text-sm">
-                {t('deliveryDetails')}
+                We offer affordable delivery within Almaty via Yandex
               </p>
             </div>
             <Button 
@@ -133,7 +131,7 @@ const Index = () => {
               className="bg-red-600 hover:bg-red-700 text-white font-semibold px-8 py-4 text-lg shadow-xl"
               onClick={() => document.getElementById('products')?.scrollIntoView({ behavior: 'smooth' })}
             >
-              {t('shopNow')}
+              Shop Now
             </Button>
           </div>
         </div>
@@ -143,10 +141,10 @@ const Index = () => {
       <div id="products" className="container mx-auto px-4 py-16">
         <div className="text-center mb-12">
           <h2 className="text-4xl font-bold font-serif text-red-700 mb-4">
-            {t('featuredSpices')}
+            Premium Indian Spices
           </h2>
           <p className="text-xl text-gray-700 max-w-2xl mx-auto">
-            {t('featuredSpicesDesc')}
+            Hand-selected authentic spices sourced directly from India for your Indian shop in Almaty
           </p>
         </div>
 

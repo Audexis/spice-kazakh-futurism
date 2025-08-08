@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { useTranslation } from '@/hooks/useTranslation';
 import { Badge } from '@/components/ui/badge';
 import { Category } from '@/hooks/useSpiceData';
 import anime from 'animejs';
@@ -34,7 +33,6 @@ const getCategoryGradient = (categoryName: string) => {
 };
 
 export const CategoryFilter = ({ categories, selectedCategory, onCategoryChange }: CategoryFilterProps) => {
-  const { t } = useTranslation();
   const [filterRef, setFilterRef] = useState<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -71,7 +69,7 @@ export const CategoryFilter = ({ categories, selectedCategory, onCategoryChange 
           }`}
         >
           <span className="text-base mr-2">✨</span>
-          {t('allCategories')}
+          All Categories
         </Button>
 
         {categories.map((category) => (
@@ -87,7 +85,7 @@ export const CategoryFilter = ({ categories, selectedCategory, onCategoryChange 
             <span className="text-base mr-2">
               {getCategoryIcon(category.name)}
             </span>
-            {t(category.name as any) || category.name}
+            {category.name}
           </Button>
         ))}
       </div>

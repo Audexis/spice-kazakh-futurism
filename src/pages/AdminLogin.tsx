@@ -5,7 +5,6 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
-import { useTranslation } from '@/hooks/useTranslation';
 import { useAdminAuth } from '@/hooks/useAdminAuth';
 import { Shield, ArrowLeft } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -15,7 +14,6 @@ const AdminLogin = () => {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const { adminUser, login } = useAdminAuth();
-  const { t } = useTranslation();
   const { toast } = useToast();
 
   // Redirect if already logged in
@@ -61,7 +59,7 @@ const AdminLogin = () => {
           className="inline-flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900 mb-6 transition-colors"
         >
           <ArrowLeft className="h-4 w-4" />
-          {t('backToStore')}
+          Back to Store
         </Link>
 
         <Card className="border-0 shadow-xl">
@@ -70,17 +68,17 @@ const AdminLogin = () => {
               <Shield className="h-6 w-6 text-white" />
             </div>
             <CardTitle className="text-2xl font-orbitron text-red-700">
-              {t('adminLogin')}
+              Admin Login
             </CardTitle>
             <p className="text-gray-600 mt-2">
-              {t('signInToAccess')}
+              Sign in to access the admin dashboard
             </p>
           </CardHeader>
           
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <Label htmlFor="email">{t('emailAddress')}</Label>
+                <Label htmlFor="email">Email Address</Label>
                 <Input
                   id="email"
                   type="email"
@@ -93,13 +91,13 @@ const AdminLogin = () => {
               </div>
 
               <div>
-              <Label htmlFor="password">{t('password')}</Label>
+              <Label htmlFor="password">Password</Label>
               <Input
                 id="password"
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder={t('password')}
+                  placeholder="Enter your password"
                   className="mt-1"
                   required
                 />
@@ -110,14 +108,14 @@ const AdminLogin = () => {
                 className="w-full bg-red-600 hover:bg-red-700 font-medium"
                 disabled={loading}
               >
-                {loading ? t('signingIn') : t('login')}
+                {loading ? 'Signing in...' : 'Sign In'}
               </Button>
             </form>
           </CardContent>
         </Card>
 
         <p className="text-center text-xs text-gray-500 mt-6">
-          {t('secureAdminArea')}
+          This is a secure admin area. Only authorized personnel have access.
         </p>
       </div>
     </div>

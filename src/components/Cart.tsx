@@ -5,12 +5,10 @@ import { Badge } from '@/components/ui/badge';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { Separator } from '@/components/ui/separator';
 import { useCart } from '@/contexts/CartContext';
-import { useTranslation } from '@/hooks/useTranslation';
 import { CheckoutModal } from '@/components/CheckoutModal';
 
 export function Cart() {
   const { items, updateQuantity, removeFromCart, getCartTotal, getCartItemCount } = useCart();
-  const { t } = useTranslation();
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
 
@@ -40,7 +38,7 @@ export function Cart() {
           <SheetHeader>
             <SheetTitle className="flex items-center gap-2">
               <ShoppingCart className="h-5 w-5" />
-              {t('cart')} ({getCartItemCount()} {t('items')})
+              Your Cart ({getCartItemCount()} items)
             </SheetTitle>
           </SheetHeader>
 
@@ -48,7 +46,7 @@ export function Cart() {
             {items.length === 0 ? (
               <div className="text-center py-8">
                 <ShoppingCart className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-                <p className="text-muted-foreground">{t('emptyCart')}</p>
+                <p className="text-muted-foreground">Your cart is empty</p>
               </div>
             ) : (
               <>
@@ -69,7 +67,7 @@ export function Cart() {
                       
                       <div className="flex-1 min-w-0">
                         <h4 className="font-medium text-sm truncate">{item.product.name}</h4>
-                        <p className="text-sm text-muted-foreground">₸{item.product.price.toFixed(2)} {t('each')}</p>
+                        <p className="text-sm text-muted-foreground">₸{item.product.price.toFixed(2)} each</p>
                         
                         <div className="flex items-center justify-between mt-2">
                           <div className="flex items-center space-x-2">
@@ -114,7 +112,7 @@ export function Cart() {
 
                 <div className="space-y-4">
                   <div className="flex justify-between items-center text-lg font-semibold">
-                    <span>{t('total')}:</span>
+                    <span>Total:</span>
                     <span>₸{getCartTotal().toFixed(2)}</span>
                   </div>
 
@@ -123,7 +121,7 @@ export function Cart() {
                     className="w-full"
                     size="lg"
                   >
-                    {t('checkout')}
+                    Proceed to Checkout
                   </Button>
                 </div>
               </>
