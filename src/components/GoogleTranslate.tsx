@@ -30,12 +30,18 @@ export const GoogleTranslate = () => {
 
   useEffect(() => {
     // Initialize Google Translate
-    if (isInitialized) return;
+    if (isInitialized) {
+      console.log('Google Translate already initialized');
+      return;
+    }
+
+    console.log('Initializing Google Translate...');
 
     window.googleTranslateElementInit = () => {
       if (isInitialized) return;
       
       try {
+        console.log('Creating Google Translate Element...');
         new window.google.translate.TranslateElement(
           {
             pageLanguage: 'en',
@@ -48,40 +54,80 @@ export const GoogleTranslate = () => {
         );
         isInitialized = true;
         setIsLoaded(true);
+        console.log('Google Translate initialized successfully');
+        
+        // Debug: Log available options after a delay
+        setTimeout(() => {
+          const selectElement = document.querySelector('.goog-te-combo') as HTMLSelectElement;
+          if (selectElement) {
+            console.log('Google Translate dropdown found with options:', Array.from(selectElement.options).map(opt => ({ value: opt.value, text: opt.text })));
+          } else {
+            console.log('Google Translate dropdown not found');
+          }
+        }, 2000);
       } catch (error) {
-        console.log('Google Translate initialization error:', error);
+        console.error('Google Translate initialization error:', error);
       }
     };
 
     // Load script
     if (!window.google?.translate) {
+      console.log('Loading Google Translate script...');
       const script = document.createElement('script');
       script.src = 'https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
       script.async = true;
+      script.onload = () => console.log('Google Translate script loaded');
+      script.onerror = () => console.error('Failed to load Google Translate script');
       document.head.appendChild(script);
     } else {
+      console.log('Google Translate already available, initializing...');
       window.googleTranslateElementInit();
     }
   }, []);
 
   const changeLanguage = (language: typeof languages[0]) => {
+    console.log('Changing language to:', language.name, language.code);
     setCurrentLanguage(language);
     
-    if (!isLoaded) return;
+    if (!isLoaded) {
+      console.log('Google Translate not loaded yet, skipping translation');
+      return;
+    }
     
     // Wait for Google Translate to be ready, then trigger translation
     const triggerTranslation = () => {
+      console.log('Attempting to trigger translation...');
       const selectElement = document.querySelector('.goog-te-combo') as HTMLSelectElement;
       if (selectElement) {
+        console.log('Found Google Translate dropdown');
+        
+        // Log all available options
+        const options = Array.from(selectElement.options);
+        console.log('Available translation options:', options.map(opt => ({ value: opt.value, text: opt.text })));
+        
         // Find the correct option value for the language
-        const options = selectElement.options;
+        let foundOption = false;
         for (let i = 0; i < options.length; i++) {
-          if (options[i].value.includes(language.code)) {
-            selectElement.value = options[i].value;
+          const optionValue = options[i].value;
+          const optionText = options[i].text;
+          
+          // Try multiple matching strategies
+          if (optionValue.includes(language.code) || 
+              optionValue === language.code || 
+              optionText.toLowerCase().includes(language.name.toLowerCase())) {
+            console.log('Found matching option:', { value: optionValue, text: optionText });
+            selectElement.value = optionValue;
             selectElement.dispatchEvent(new Event('change', { bubbles: true }));
+            foundOption = true;
             break;
           }
         }
+        
+        if (!foundOption) {
+          console.log('No matching option found for language:', language.code);
+        }
+      } else {
+        console.log('Google Translate dropdown not found');
       }
     };
 
