@@ -22,9 +22,10 @@ export const GoogleTranslate = () => {
       new window.google.translate.TranslateElement(
         {
           pageLanguage: 'en',
-          includedLanguages: 'en,ru,kk,zh,fr,de,es,ar,hi,ur,tr,fa',
+          includedLanguages: 'en,ru,kk,zh,fr,de,es,ar,hi,ur,tr,fa,ja,ko',
           layout: window.google.translate.TranslateElement.InlineLayout.SIMPLE,
           autoDisplay: false,
+          multilanguagePage: true,
         },
         'google_translate_element'
       );
@@ -39,12 +40,11 @@ export const GoogleTranslate = () => {
   }, []);
 
   return (
-    <div 
-      id="google_translate_element" 
-      className="google-translate-widget"
-      style={{
-        display: 'inline-block',
-      }}
-    />
+    <div className="relative">
+      <div 
+        id="google_translate_element" 
+        className="google-translate-widget"
+      />
+    </div>
   );
 };
