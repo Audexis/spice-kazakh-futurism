@@ -1,5 +1,6 @@
 
 import { useState } from "react";
+import { useTranslation } from 'react-i18next';
 import { Navbar } from "@/components/Navbar";
 import indianSpicesBackground from "@/assets/indian-spices-background.jpg";
 import { CategoryFilter } from "@/components/CategoryFilter";
@@ -14,6 +15,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Product } from "@/hooks/useSpiceData";
 
 const Index = () => {
+  const { t } = useTranslation();
   const { categories, products, loading } = useSpiceData();
   const { adminUser } = useAdminAuth();
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
@@ -39,18 +41,18 @@ const Index = () => {
         <div className="min-h-screen bg-background">
           <div className="container mx-auto px-4 py-8">
             <div className="mb-8">
-              <h1 className="text-3xl font-bold font-orbitron text-primary-gradient mb-2">
-                Admin Dashboard
+            <h1 className="text-3xl font-bold font-orbitron text-primary-gradient mb-2">
+                {t('admin.dashboard')}
               </h1>
               <p className="text-muted-foreground">
-                Welcome back, {adminUser.name}
+                {t('admin.welcome_back', { name: adminUser.name })}
               </p>
             </div>
 
             <Tabs defaultValue="orders" className="space-y-6">
               <TabsList className="grid w-full grid-cols-2 max-w-md">
-                <TabsTrigger value="orders">Order Management</TabsTrigger>
-                <TabsTrigger value="products">Product Management</TabsTrigger>
+                <TabsTrigger value="orders">{t('admin.order_management')}</TabsTrigger>
+                <TabsTrigger value="products">{t('admin.product_management')}</TabsTrigger>
               </TabsList>
               
               <TabsContent value="orders">
@@ -69,7 +71,7 @@ const Index = () => {
                           onClick={() => setEditingProduct(product)}
                           className="absolute top-2 right-2 z-10 bg-background/90 backdrop-blur-sm"
                         >
-                          Edit
+                          {t('common.edit')}
                         </Button>
                       </div>
                     ))}
@@ -110,20 +112,20 @@ const Index = () => {
         <div className="relative z-10 container mx-auto px-4 py-32 text-center flex items-center justify-center min-h-screen">
           <div className="max-w-4xl mx-auto">
             <h1 className="text-5xl md:text-7xl font-bold font-serif text-white mb-6 drop-shadow-2xl">
-              Indian Spices in Almaty
+              {t('hero.title')}
             </h1>
             <p className="text-xl md:text-2xl text-white/90 mb-8 drop-shadow-lg">
-              Discover authentic flavors from the heart of India
+              {t('hero.subtitle')}
             </p>
             <p className="text-lg text-white/80 mb-6 drop-shadow-lg">
-              Premium Indian grocery • Online spice bazaar • Hassle free and authentic ingredients
+              {t('hero.description')}
             </p>
             <div className="bg-red-600/20 border border-red-400/30 rounded-lg px-6 py-3 mb-8 backdrop-blur-sm">
               <p className="text-white font-semibold text-sm uppercase tracking-wide mb-1">
-                🚚 DELIVERY WITHIN CITY LIMITS
+                🚚 {t('hero.delivery_title')}
               </p>
               <p className="text-white/90 text-sm">
-                We offer affordable delivery within Almaty via Yandex
+                {t('hero.delivery_description')}
               </p>
             </div>
             <Button 
@@ -131,7 +133,7 @@ const Index = () => {
               className="bg-red-600 hover:bg-red-700 text-white font-semibold px-8 py-4 text-lg shadow-xl"
               onClick={() => document.getElementById('products')?.scrollIntoView({ behavior: 'smooth' })}
             >
-              Shop Now
+              {t('common.shop_now')}
             </Button>
           </div>
         </div>
@@ -141,10 +143,10 @@ const Index = () => {
       <div id="products" className="container mx-auto px-4 py-16">
         <div className="text-center mb-12">
           <h2 className="text-4xl font-bold font-serif text-red-700 mb-4">
-            Premium Indian Spices
+            {t('products.section_title')}
           </h2>
           <p className="text-xl text-gray-700 max-w-2xl mx-auto">
-            Hand-selected authentic spices sourced directly from India for your Indian shop in Almaty
+            {t('products.section_description')}
           </p>
         </div>
 

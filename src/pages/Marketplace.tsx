@@ -1,5 +1,6 @@
 
 import { useState } from "react";
+import { useTranslation } from 'react-i18next';
 import { Navbar } from "@/components/Navbar";
 import { CategoryFilter } from "@/components/CategoryFilter";
 import { SpiceCard } from "@/components/SpiceCard";
@@ -14,6 +15,7 @@ import { Search, Filter } from "lucide-react";
 import { Product } from "@/hooks/useSpiceData";
 
 const Marketplace = () => {
+  const { t } = useTranslation();
   const { categories, products, loading } = useSpiceData();
   const { adminUser } = useAdminAuth();
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
@@ -117,10 +119,10 @@ const Marketplace = () => {
         <div className="container mx-auto px-4 py-16">
           <div className="text-center">
             <h1 className="text-4xl md:text-6xl font-bold font-orbitron text-primary-gradient mb-6">
-              Spice Marketplace
+              {t('marketplace.title')}
             </h1>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Browse our complete collection of premium Kazakhstani spices and seasonings
+              {t('marketplace.description')}
             </p>
           </div>
         </div>
@@ -142,7 +144,7 @@ const Marketplace = () => {
           <div className="flex items-center gap-2 text-muted-foreground">
             <Filter className="h-4 w-4" />
             <span>
-              {filteredProducts.length} products found
+              {t('marketplace.products_found', { count: filteredProducts.length })}
             </span>
           </div>
           
@@ -155,7 +157,7 @@ const Marketplace = () => {
                 setSearchQuery("");
               }}
             >
-              Clear Filters
+              {t('common.clear_filters')}
             </Button>
           )}
         </div>
@@ -188,9 +190,9 @@ const Marketplace = () => {
         ) : (
           <div className="text-center py-16">
             <Search className="h-16 w-16 mx-auto text-muted-foreground/50 mb-4" />
-            <h3 className="text-2xl font-semibold mb-2">No products found</h3>
+            <h3 className="text-2xl font-semibold mb-2">{t('marketplace.no_products')}</h3>
             <p className="text-muted-foreground mb-6">
-              Try adjusting your search or filter criteria
+              {t('marketplace.no_products_description')}
             </p>
             <Button
               variant="outline"
@@ -199,7 +201,7 @@ const Marketplace = () => {
                 setSearchQuery("");
               }}
             >
-              View All Products
+              {t('common.view_all_products')}
             </Button>
           </div>
         )}

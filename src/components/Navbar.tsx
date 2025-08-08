@@ -1,5 +1,6 @@
 
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Search, Menu, X, Settings, LogOut } from 'lucide-react';
@@ -16,14 +17,15 @@ interface NavbarProps {
 }
 
 export const Navbar = ({ isAdmin, onAdminToggle, searchQuery, onSearchChange }: NavbarProps) => {
+  const { t } = useTranslation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
   const { adminUser, logout } = useAdminAuth();
 
   const navItems = [
-    { name: 'Home', path: '/' },
-    { name: 'Marketplace', path: '/marketplace' },
+    { name: t('nav.home'), path: '/' },
+    { name: t('nav.marketplace'), path: '/marketplace' },
   ];
 
   const isActive = (path: string) => location.pathname === path;
@@ -78,7 +80,7 @@ export const Navbar = ({ isAdmin, onAdminToggle, searchQuery, onSearchChange }: 
               <div className="relative w-full">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
-                  placeholder="Search products..."
+                  placeholder={t('nav.search_placeholder')}
                   value={searchQuery}
                   onChange={(e) => onSearchChange(e.target.value)}
                   className="pl-10 bg-background/50"
@@ -101,7 +103,7 @@ export const Navbar = ({ isAdmin, onAdminToggle, searchQuery, onSearchChange }: 
                   className="focus-ring bg-background/80"
                 >
                   <Settings className="h-4 w-4 mr-2" />
-                  {isAdmin ? '👤 USER MODE' : '🔧 ADMIN MODE'}
+                  {isAdmin ? `👤 ${t('nav.user_mode')}` : `🔧 ${t('nav.admin_mode')}`}
                 </Button>
                 <Button
                   variant="ghost"
@@ -134,7 +136,7 @@ export const Navbar = ({ isAdmin, onAdminToggle, searchQuery, onSearchChange }: 
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
-                  placeholder="Search products..."
+                  placeholder={t('nav.search_placeholder')}
                   value={searchQuery}
                   onChange={(e) => onSearchChange(e.target.value)}
                   className="pl-10"
@@ -170,7 +172,7 @@ export const Navbar = ({ isAdmin, onAdminToggle, searchQuery, onSearchChange }: 
                   className="w-full focus-ring"
                 >
                   <Settings className="h-4 w-4 mr-2" />
-                  {isAdmin ? '👤 USER MODE' : '🔧 ADMIN MODE'}
+                  {isAdmin ? `👤 ${t('nav.user_mode')}` : `🔧 ${t('nav.admin_mode')}`}
                 </Button>
                 <Button
                   variant="ghost"
@@ -179,7 +181,7 @@ export const Navbar = ({ isAdmin, onAdminToggle, searchQuery, onSearchChange }: 
                   className="w-full"
                 >
                   <LogOut className="h-4 w-4 mr-2" />
-                  Logout
+                  {t('nav.logout')}
                 </Button>
               </div>
             )}
