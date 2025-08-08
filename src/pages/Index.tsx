@@ -42,17 +42,17 @@ const Index = () => {
           <div className="container mx-auto px-4 py-8">
             <div className="mb-8">
             <h1 className="text-3xl font-bold font-orbitron text-primary-gradient mb-2">
-                {t('admin.dashboard')}
+                {t('dashboard')}
               </h1>
               <p className="text-muted-foreground">
-                {t('admin.welcome_back', { name: adminUser.name })}
+                {t('welcome')}, {adminUser.name}
               </p>
             </div>
 
             <Tabs defaultValue="orders" className="space-y-6">
               <TabsList className="grid w-full grid-cols-2 max-w-md">
-                <TabsTrigger value="orders">{t('admin.order_management')}</TabsTrigger>
-                <TabsTrigger value="products">{t('admin.product_management')}</TabsTrigger>
+                <TabsTrigger value="orders">{t('manage_orders')}</TabsTrigger>
+                <TabsTrigger value="products">{t('manage_products')}</TabsTrigger>
               </TabsList>
               
               <TabsContent value="orders">
@@ -71,7 +71,7 @@ const Index = () => {
                           onClick={() => setEditingProduct(product)}
                           className="absolute top-2 right-2 z-10 bg-background/90 backdrop-blur-sm"
                         >
-                          {t('common.edit')}
+                          {t('edit')}
                         </Button>
                       </div>
                     ))}
@@ -112,20 +112,20 @@ const Index = () => {
         <div className="relative z-10 container mx-auto px-4 py-32 text-center flex items-center justify-center min-h-screen">
           <div className="max-w-4xl mx-auto">
             <h1 className="text-5xl md:text-7xl font-bold font-serif text-white mb-6 drop-shadow-2xl">
-              {t('hero.title')}
+              Indian Spices in Almaty
             </h1>
             <p className="text-xl md:text-2xl text-white/90 mb-8 drop-shadow-lg">
-              {t('hero.subtitle')}
+              Discover authentic flavors from the heart of India
             </p>
             <p className="text-lg text-white/80 mb-6 drop-shadow-lg">
-              {t('hero.description')}
+              Premium Indian grocery • Online spice bazaar • Hassle free and authentic ingredients
             </p>
             <div className="bg-red-600/20 border border-red-400/30 rounded-lg px-6 py-3 mb-8 backdrop-blur-sm">
               <p className="text-white font-semibold text-sm uppercase tracking-wide mb-1">
-                🚚 {t('hero.delivery_title')}
+                🚚 DELIVERY WITHIN CITY LIMITS
               </p>
               <p className="text-white/90 text-sm">
-                {t('hero.delivery_description')}
+                We offer affordable delivery within Almaty via Yandex
               </p>
             </div>
             <Button 
@@ -133,7 +133,7 @@ const Index = () => {
               className="bg-red-600 hover:bg-red-700 text-white font-semibold px-8 py-4 text-lg shadow-xl"
               onClick={() => document.getElementById('products')?.scrollIntoView({ behavior: 'smooth' })}
             >
-              {t('common.shop_now')}
+              {t('shop_now')}
             </Button>
           </div>
         </div>
@@ -143,10 +143,10 @@ const Index = () => {
       <div id="products" className="container mx-auto px-4 py-16">
         <div className="text-center mb-12">
           <h2 className="text-4xl font-bold font-serif text-red-700 mb-4">
-            {t('products.section_title')}
+            Premium Indian {t('spices')}
           </h2>
           <p className="text-xl text-gray-700 max-w-2xl mx-auto">
-            {t('products.section_description')}
+            Hand-selected authentic spices sourced directly from India for your Indian shop in Almaty
           </p>
         </div>
 

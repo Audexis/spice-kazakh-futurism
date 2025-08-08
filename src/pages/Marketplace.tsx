@@ -119,10 +119,10 @@ const Marketplace = () => {
         <div className="container mx-auto px-4 py-16">
           <div className="text-center">
             <h1 className="text-4xl md:text-6xl font-bold font-orbitron text-primary-gradient mb-6">
-              {t('marketplace.title')}
+              {t('spices')} {t('marketplace')}
             </h1>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              {t('marketplace.description')}
+              Browse our complete collection of premium Indian spices and seasonings
             </p>
           </div>
         </div>
@@ -144,7 +144,7 @@ const Marketplace = () => {
           <div className="flex items-center gap-2 text-muted-foreground">
             <Filter className="h-4 w-4" />
             <span>
-              {t('marketplace.products_found', { count: filteredProducts.length })}
+              {filteredProducts.length} {t('products')} found
             </span>
           </div>
           
@@ -157,7 +157,7 @@ const Marketplace = () => {
                 setSearchQuery("");
               }}
             >
-              {t('common.clear_filters')}
+              Clear {t('filter')}
             </Button>
           )}
         </div>
@@ -190,9 +190,9 @@ const Marketplace = () => {
         ) : (
           <div className="text-center py-16">
             <Search className="h-16 w-16 mx-auto text-muted-foreground/50 mb-4" />
-            <h3 className="text-2xl font-semibold mb-2">{t('marketplace.no_products')}</h3>
+            <h3 className="text-2xl font-semibold mb-2">No {t('products')} found</h3>
             <p className="text-muted-foreground mb-6">
-              {t('marketplace.no_products_description')}
+              Try adjusting your search or filter criteria
             </p>
             <Button
               variant="outline"
@@ -201,7 +201,7 @@ const Marketplace = () => {
                 setSearchQuery("");
               }}
             >
-              {t('common.view_all_products')}
+              View All {t('products')}
             </Button>
           </div>
         )}

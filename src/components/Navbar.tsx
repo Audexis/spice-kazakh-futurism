@@ -24,8 +24,8 @@ export const Navbar = ({ isAdmin, onAdminToggle, searchQuery, onSearchChange }: 
   const { adminUser, logout } = useAdminAuth();
 
   const navItems = [
-    { name: t('nav.home'), path: '/' },
-    { name: t('nav.marketplace'), path: '/marketplace' },
+    { name: t('home'), path: '/' },
+    { name: t('marketplace'), path: '/marketplace' },
   ];
 
   const isActive = (path: string) => location.pathname === path;
@@ -80,7 +80,7 @@ export const Navbar = ({ isAdmin, onAdminToggle, searchQuery, onSearchChange }: 
               <div className="relative w-full">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
-                  placeholder={t('nav.search_placeholder')}
+                  placeholder={`${t('search')} ${t('products')}...`}
                   value={searchQuery}
                   onChange={(e) => onSearchChange(e.target.value)}
                   className="pl-10 bg-background/50"
@@ -103,7 +103,7 @@ export const Navbar = ({ isAdmin, onAdminToggle, searchQuery, onSearchChange }: 
                   className="focus-ring bg-background/80"
                 >
                   <Settings className="h-4 w-4 mr-2" />
-                  {isAdmin ? `👤 ${t('nav.user_mode')}` : `🔧 ${t('nav.admin_mode')}`}
+                  {isAdmin ? "👤 USER MODE" : "🔧 ADMIN MODE"}
                 </Button>
                 <Button
                   variant="ghost"
@@ -136,7 +136,7 @@ export const Navbar = ({ isAdmin, onAdminToggle, searchQuery, onSearchChange }: 
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
-                  placeholder={t('nav.search_placeholder')}
+                  placeholder={`${t('search')} ${t('products')}...`}
                   value={searchQuery}
                   onChange={(e) => onSearchChange(e.target.value)}
                   className="pl-10"
@@ -172,7 +172,7 @@ export const Navbar = ({ isAdmin, onAdminToggle, searchQuery, onSearchChange }: 
                   className="w-full focus-ring"
                 >
                   <Settings className="h-4 w-4 mr-2" />
-                  {isAdmin ? `👤 ${t('nav.user_mode')}` : `🔧 ${t('nav.admin_mode')}`}
+                  {isAdmin ? "👤 USER MODE" : "🔧 ADMIN MODE"}
                 </Button>
                 <Button
                   variant="ghost"
@@ -181,7 +181,7 @@ export const Navbar = ({ isAdmin, onAdminToggle, searchQuery, onSearchChange }: 
                   className="w-full"
                 >
                   <LogOut className="h-4 w-4 mr-2" />
-                  {t('nav.logout')}
+                  {t('logout')}
                 </Button>
               </div>
             )}
