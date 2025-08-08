@@ -141,10 +141,16 @@ const resources = {
       "all_categories": "All Categories",
       
       // Product translations
+      "something": "something",
       "Garam Masala Premium": "Garam Masala Premium",
       "Turmeric Powder": "Turmeric Powder", 
       "Cumin Seeds Whole": "Cumin Seeds Whole",
       "Red Chili Powder": "Red Chili Powder",
+      "Basmati Rice Premium": "Basmati Rice Premium",
+      "Chickpea Flour (Besan)": "Chickpea Flour (Besan)",
+      "Moong Dal Yellow": "Moong Dal Yellow",
+      "Toor Dal": "Toor Dal",
+      "Masala Papad": "Masala Papad",
       "Coriander Seeds": "Coriander Seeds",
       "Cardamom Pods": "Cardamom Pods",
       "Cinnamon Sticks": "Cinnamon Sticks",
@@ -162,10 +168,16 @@ const resources = {
       "Sweets": "Sweets",
       
       // Product descriptions
+      "test": "test",
       "Authentic blend of aromatic spices perfect for Indian cuisine": "Authentic blend of aromatic spices perfect for Indian cuisine",
       "Pure golden turmeric powder with anti-inflammatory properties": "Pure golden turmeric powder with anti-inflammatory properties", 
       "Fresh whole cumin seeds for tempering and grinding": "Fresh whole cumin seeds for tempering and grinding",
-      "Hot and flavorful red chili powder from Kashmir": "Hot and flavorful red chili powder from Kashmir"
+      "Hot and flavorful red chili powder from Kashmir": "Hot and flavorful red chili powder from Kashmir",
+      "Long grain aromatic basmati rice from India": "Long grain aromatic basmati rice from India",
+      "Fine ground chickpea flour for snacks and sweets": "Fine ground chickpea flour for snacks and sweets",
+      "Split yellow mung beans, protein-rich lentils": "Split yellow mung beans, protein-rich lentils",
+      "Yellow pigeon peas, staple protein in Indian cooking": "Yellow pigeon peas, staple protein in Indian cooking",
+      "Crispy lentil crackers with spices": "Crispy lentil crackers with spices"
     }
   },
   ru: {
@@ -286,10 +298,16 @@ const resources = {
       "all_categories": "Все категории",
       
       // Product translations
+      "something": "что-то",
       "Garam Masala Premium": "Гарам Масала Премиум",
       "Turmeric Powder": "Порошок Куркумы", 
       "Cumin Seeds Whole": "Семена Тмина Цельные",
       "Red Chili Powder": "Красный Порошок Чили",
+      "Basmati Rice Premium": "Басмати Рис Премиум",
+      "Chickpea Flour (Besan)": "Нутовая Мука (Бесан)",
+      "Moong Dal Yellow": "Мунг Дал Желтый",
+      "Toor Dal": "Тур Дал",
+      "Masala Papad": "Масала Папад",
       "Coriander Seeds": "Семена Кориандра",
       "Cardamom Pods": "Стручки Кардамона",
       "Cinnamon Sticks": "Палочки Корицы",
@@ -307,10 +325,16 @@ const resources = {
       "Sweets": "Сладости",
       
       // Product descriptions
+      "test": "тест",
       "Authentic blend of aromatic spices perfect for Indian cuisine": "Аутентичная смесь ароматных специй, идеальная для индийской кухни",
       "Pure golden turmeric powder with anti-inflammatory properties": "Чистый золотистый порошок куркумы с противовоспалительными свойствами", 
       "Fresh whole cumin seeds for tempering and grinding": "Свежие цельные семена тмина для темперирования и помола",
-      "Hot and flavorful red chili powder from Kashmir": "Острый и ароматный красный порошок чили из Кашмира"
+      "Hot and flavorful red chili powder from Kashmir": "Острый и ароматный красный порошок чили из Кашмира",
+      "Long grain aromatic basmati rice from India": "Длиннозернистый ароматный рис басмати из Индии",
+      "Fine ground chickpea flour for snacks and sweets": "Мелко помолотая нутовая мука для снеков и сладостей",
+      "Split yellow mung beans, protein-rich lentils": "Расколотая желтая фасоль мунг, богатая белком чечевица",
+      "Yellow pigeon peas, staple protein in Indian cooking": "Желтый голубиный горошек, основной белок в индийской кухне",
+      "Crispy lentil crackers with spices": "Хрустящие чечевичные крекеры со специями"
     }
   },
   ar: {

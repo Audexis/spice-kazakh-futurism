@@ -84,10 +84,10 @@ export const CategoryFilter = ({ categories, selectedCategory, onCategoryChange 
               selectedCategory === category.id ? 'shadow-md' : ''
             }`}
           >
-            <span className="text-base mr-2">
-              {getCategoryIcon(category.name)}
-            </span>
-            {category.name}
+             <span className="text-base mr-2">
+               {getCategoryIcon(category.name)}
+             </span>
+             {t(category.name) !== category.name ? t(category.name) : category.name}
           </Button>
         ))}
       </div>
