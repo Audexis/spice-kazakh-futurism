@@ -112,20 +112,20 @@ const Index = () => {
         <div className="relative z-10 container mx-auto px-4 py-32 text-center flex items-center justify-center min-h-screen">
           <div className="max-w-4xl mx-auto">
             <h1 className="text-5xl md:text-7xl font-bold font-serif text-white mb-6 drop-shadow-2xl">
-              Indian Spices in Almaty
+              {t('hero_title')}
             </h1>
             <p className="text-xl md:text-2xl text-white/90 mb-8 drop-shadow-lg">
-              Discover authentic flavors from the heart of India
+              {t('hero_subtitle')}
             </p>
             <p className="text-lg text-white/80 mb-6 drop-shadow-lg">
-              Premium Indian grocery • Online spice bazaar • Hassle free and authentic ingredients
+              {t('hero_description')}
             </p>
             <div className="bg-red-600/20 border border-red-400/30 rounded-lg px-6 py-3 mb-8 backdrop-blur-sm">
               <p className="text-white font-semibold text-sm uppercase tracking-wide mb-1">
-                🚚 DELIVERY WITHIN CITY LIMITS
+                🚚 {t('delivery_title')}
               </p>
               <p className="text-white/90 text-sm">
-                We offer affordable delivery within Almaty via Yandex
+                {t('delivery_description')}
               </p>
             </div>
             <Button 

@@ -80,10 +80,10 @@ export const SpiceCard = ({ product, isAdmin, onEdit, onDelete }: SpiceCardProps
           </div>
           
           <div className="space-y-2">
-            <div className="flex items-start justify-between">
-              <CardTitle className="text-lg leading-tight line-clamp-2">
-                {product.name}
-              </CardTitle>
+           <div className="flex items-start justify-between">
+             <CardTitle className="text-lg leading-tight line-clamp-2">
+               {t(product.name) !== product.name ? t(product.name) : product.name}
+             </CardTitle>
               {isAdmin && (
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild onClick={(e) => e.preventDefault()}>
@@ -117,10 +117,10 @@ export const SpiceCard = ({ product, isAdmin, onEdit, onDelete }: SpiceCardProps
               )}
             </div>
 
-            {product.category && (
-              <Badge variant="secondary" className="text-xs">
-                {product.category.name}
-              </Badge>
+           {product.category && (
+             <Badge variant="secondary" className="text-xs">
+               {t(product.category.name) !== product.category.name ? t(product.category.name) : product.category.name}
+             </Badge>
             )}
 
             {/* Rating */}
@@ -140,10 +140,10 @@ export const SpiceCard = ({ product, isAdmin, onEdit, onDelete }: SpiceCardProps
 
       <CardContent className="pt-0">
         <div className="space-y-3">
-          {product.description && (
-            <p className="text-sm text-muted-foreground line-clamp-2">
-              {product.description}
-            </p>
+         {product.description && (
+           <p className="text-sm text-muted-foreground line-clamp-2">
+             {t(product.description) !== product.description ? t(product.description) : product.description}
+           </p>
           )}
           
              {product.manufacturer && (

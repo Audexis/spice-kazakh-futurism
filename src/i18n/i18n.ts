@@ -64,8 +64,11 @@ const resources = {
       "expiry": "Expiry Date",
       
       // Hero section
-      "hero_title": "Discover Authentic Spices",
-      "hero_subtitle": "Premium quality spices from around the world",
+      "hero_title": "Indian Spices in Almaty",
+      "hero_subtitle": "Discover authentic flavors from the heart of India",
+      "hero_description": "Premium Indian grocery • Online spice bazaar • Hassle free and authentic ingredients",
+      "delivery_title": "DELIVERY WITHIN CITY LIMITS",
+      "delivery_description": "We offer affordable delivery within Almaty via Yandex",
       "shop_now": "Shop Now",
       "learn_more": "Learn More",
       
@@ -135,7 +138,34 @@ const resources = {
       
       // Category filter
       "browse_categories": "Browse Categories",
-      "all_categories": "All Categories"
+      "all_categories": "All Categories",
+      
+      // Product translations
+      "Garam Masala Premium": "Garam Masala Premium",
+      "Turmeric Powder": "Turmeric Powder", 
+      "Cumin Seeds Whole": "Cumin Seeds Whole",
+      "Red Chili Powder": "Red Chili Powder",
+      "Coriander Seeds": "Coriander Seeds",
+      "Cardamom Pods": "Cardamom Pods",
+      "Cinnamon Sticks": "Cinnamon Sticks",
+      "Cloves Whole": "Cloves Whole",
+      "Black Pepper": "Black Pepper",
+      "Bay Leaves": "Bay Leaves",
+      "Fenugreek Seeds": "Fenugreek Seeds",
+      "Mustard Seeds": "Mustard Seeds",
+      
+      // Category translations
+      "Spices": "Spices",
+      "Flour": "Flour", 
+      "Lentils": "Lentils",
+      "Snacks": "Snacks",
+      "Sweets": "Sweets",
+      
+      // Product descriptions
+      "Authentic blend of aromatic spices perfect for Indian cuisine": "Authentic blend of aromatic spices perfect for Indian cuisine",
+      "Pure golden turmeric powder with anti-inflammatory properties": "Pure golden turmeric powder with anti-inflammatory properties", 
+      "Fresh whole cumin seeds for tempering and grinding": "Fresh whole cumin seeds for tempering and grinding",
+      "Hot and flavorful red chili powder from Kashmir": "Hot and flavorful red chili powder from Kashmir"
     }
   },
   ru: {
@@ -191,8 +221,11 @@ const resources = {
       "usage": "Применение",
       "storage": "Хранение",
       "expiry": "Срок годности",
-      "hero_title": "Откройте для себя аутентичные специи",
-      "hero_subtitle": "Специи премиум качества со всего мира",
+      "hero_title": "Откройте для себя аутентичные специи Индии в Алматы",
+      "hero_subtitle": "Откройте для себя аутентичные вкусы из сердца Индии",
+      "hero_description": "Премиум индийские продукты • Онлайн базар специй • Удобные и аутентичные ингредиенты",
+      "delivery_title": "ДОСТАВКА В ПРЕДЕЛАХ ГОРОДА",
+      "delivery_description": "Мы предлагаем доступную доставку по Алматы через Яндекс",
       "shop_now": "Купить сейчас",
       "learn_more": "Узнать больше",
       "add_to_cart": "Добавить в корзину",
@@ -250,7 +283,34 @@ const resources = {
       
       // Category filter
       "browse_categories": "Категории товаров",
-      "all_categories": "Все категории"
+      "all_categories": "Все категории",
+      
+      // Product translations
+      "Garam Masala Premium": "Гарам Масала Премиум",
+      "Turmeric Powder": "Порошок Куркумы", 
+      "Cumin Seeds Whole": "Семена Тмина Цельные",
+      "Red Chili Powder": "Красный Порошок Чили",
+      "Coriander Seeds": "Семена Кориандра",
+      "Cardamom Pods": "Стручки Кардамона",
+      "Cinnamon Sticks": "Палочки Корицы",
+      "Cloves Whole": "Гвоздика Цельная",
+      "Black Pepper": "Черный Перец",
+      "Bay Leaves": "Лавровые Листья",
+      "Fenugreek Seeds": "Семена Пажитника",
+      "Mustard Seeds": "Семена Горчицы",
+      
+      // Category translations
+      "Spices": "Специи",
+      "Flour": "Мука", 
+      "Lentils": "Чечевица",
+      "Snacks": "Снеки",
+      "Sweets": "Сладости",
+      
+      // Product descriptions
+      "Authentic blend of aromatic spices perfect for Indian cuisine": "Аутентичная смесь ароматных специй, идеальная для индийской кухни",
+      "Pure golden turmeric powder with anti-inflammatory properties": "Чистый золотистый порошок куркумы с противовоспалительными свойствами", 
+      "Fresh whole cumin seeds for tempering and grinding": "Свежие цельные семена тмина для темперирования и помола",
+      "Hot and flavorful red chili powder from Kashmir": "Острый и ароматный красный порошок чили из Кашмира"
     }
   },
   ar: {

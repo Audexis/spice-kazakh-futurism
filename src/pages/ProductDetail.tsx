@@ -202,11 +202,11 @@ export default function ProductDetail() {
 
             {/* Product Info */}
             <div className="space-y-6">
-              <div>
-                <Badge variant="secondary" className="mb-2">
-                  {product.category?.name}
+               <div>
+                 <Badge variant="secondary" className="mb-2">
+                   {product.category?.name && (t(product.category.name) !== product.category.name ? t(product.category.name) : product.category.name)}
                 </Badge>
-                <h1 className="text-4xl font-bold mb-2">{product.name}</h1>
+                <h1 className="text-4xl font-bold mb-2">{t(product.name) !== product.name ? t(product.name) : product.name}</h1>
                 <p className="text-lg text-muted-foreground">{product.manufacturer}</p>
               </div>
 
@@ -246,10 +246,10 @@ export default function ProductDetail() {
               </div>
 
               {/* Description */}
-              <div>
-                <h3 className="text-lg font-semibold mb-2">{t('product_description')}</h3>
-                <p className="text-muted-foreground leading-relaxed">
-                  {product.description || 'Experience the authentic flavors of traditional Indian cuisine with this premium product. Carefully sourced and selected for quality, this item brings the essence of Indian culinary heritage to your kitchen.'}
+               <div>
+                 <h3 className="text-lg font-semibold mb-2">{t('product_description')}</h3>
+                 <p className="text-muted-foreground leading-relaxed">
+                   {product.description ? (t(product.description) !== product.description ? t(product.description) : product.description) : 'Experience the authentic flavors of traditional Indian cuisine with this premium product. Carefully sourced and selected for quality, this item brings the essence of Indian culinary heritage to your kitchen.'}
                 </p>
               </div>
 
